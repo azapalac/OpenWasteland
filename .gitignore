@@ -55,3 +55,10 @@ Library/metadata/cd/cd6e3b92a8428ab48bdac5b35a01ba41.info
 Library/metadata/81/81cf76a654bcc2749b560a2f6beed0b0
 Library/metadata/9f/9fd0771a0a0254a45aaac7b2bb02d5ad
 Library/metadata/00/00000000000000003000000000000000
+Library/metadata/00/00000000000000004000000000000000
+*.log
+OpenWasteland-csharp.sln
+*.bakert
+OpenWasteland.sln
+Library/assetDatabase3
+*.log
