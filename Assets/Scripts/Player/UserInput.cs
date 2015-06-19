@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using RTS;
+using UnityEngine.UI;
 
 public class UserInput : MonoBehaviour {
 	private Player player;
@@ -16,6 +17,14 @@ public class UserInput : MonoBehaviour {
 		if(player.isHuman){
 			MoveCamera();
 			RotateCamera();
+			MouseActivity();
+
+			if(Input.GetMouseButton(0)){
+				//Select units
+				RaycastHit hit;
+				Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+			}
 		}
 	}
 
@@ -79,4 +88,55 @@ public class UserInput : MonoBehaviour {
 		}
 	}
 
+	private void MouseActivity(){
+		if(Input.GetMouseButtonDown(0)) LeftMouseClick();
+		else if(Input.GetMouseButtonDown(1)) RightMouseClick();
+	}
+
+	private void LeftMouseClick(){
+		if(player.hud.MouseInBounds()){
+			Debug.Log ("Click!");
+			GameObject hitObject = FindHitObject();
+			Vector3 hitPoint = FindHitPoint();
+			if(hitObject && hitPoint != ResourceManager.InvalidPosition){
+				if(player.SelectedObject) player.SelectedObject.MouseClick(hitObject, hitPoint, player);
+				else if(hitObject.name != "Ground"){
+					WorldObject worldObject = hitObject.GetComponent<WorldObject>();
+
+					if(worldObject){
+						player.SelectedObject = worldObject;
+						worldObject.SetSelection(true);
+					}
+
+				}
+			}
+
+		}
+	}
+
+	private GameObject FindHitObject(){
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if(Physics.Raycast (ray, out hit)){ 
+			Debug.Log ("Hit " + hit.collider.transform.root.gameObject.name);
+			return hit.collider.transform.root.gameObject;
+
+		}
+
+		return null;
+	}
+
+	private Vector3 FindHitPoint(){
+		Ray ray  = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if(Physics.Raycast (ray, out hit)) return hit.point;
+		return ResourceManager.InvalidPosition;
+	}
+
+	private void RightMouseClick(){
+		if(player.hud.MouseInBounds() && !Input.GetKey (KeyCode.LeftAlt) && player.SelectedObject){
+			player.SelectedObject.SetSelection(false);
+			player.SelectedObject = null;
+		}
+	}
 }
