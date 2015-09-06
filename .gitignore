@@ -62,3 +62,14 @@ OpenWasteland-csharp.sln
 OpenWasteland.sln
 Library/assetDatabase3
 *.log
+Library/metadata/00/00000000000000003000000000000000
+*.mdb
+Library/ScriptAssemblies/Assembly-CSharp.dll
+Library/metadata/00/00000000000000004000000000000000
+Library/assetDatabase3
+Library/assetDatabase3
+*.dll
+Library/ScriptAssemblies/Assembly-CSharp.dll.mdb
+*.userprefs
+Library/metadata/00/00000000000000003000000000000000
+Temp/UnityTempFile-3130fa7d628d9854bbd2572a72cc9139

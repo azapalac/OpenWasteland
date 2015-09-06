@@ -13,18 +13,12 @@ public class HUD : MonoBehaviour {
 	private const int ORDERS_BAR_WIDTH = 150, RESOURCE_BAR_HEIGHT = 40;
 	private Player player;
 	public Text nameField;
-
 	
-	private const int DEFAULT = 0, MOVE = 1, SELECT = 2, ATTACK = 3, HARVEST = 4;
 	public Image mouseCursor;
-	private int mouseCursorState;
-	public Vector3 mousePosition;
 	public Sprite defaultCursor, moveCursor, attackCursor, selectCursor, harvestCursor;
 
 	// Use this for initialization
 	void Awake () {
-		mouseCursorState = DEFAULT;
-		mousePosition = new Vector3(0, 0, 0);
 		Cursor.visible = false;
 		mouseCursor.color = Color.black;
 		//mouseCursor.rectTransform.position = Vector3.zero;
@@ -56,12 +50,29 @@ public class HUD : MonoBehaviour {
 
 
 	private void DrawMouseCursor(){
-		mousePosition.x = Input.mousePosition.x;
-		mousePosition.y = Input.mousePosition.y;
-		mousePosition.z = 0;
+		mouseCursor.rectTransform.position  = Input.mousePosition;
 
-		mouseCursor.rectTransform.position  = mousePosition;
+		if(player.SelectedObject){
 
+
+		}else{
+
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if(Physics.Raycast (ray, out hit)){
+				if(hit.collider.gameObject.layer == ResourceManager.WorldObjectLayer){
+					mouseCursor.sprite = selectCursor;
+					mouseCursor.color = Color.green;
+				}else{
+					mouseCursor.sprite = defaultCursor;
+					mouseCursor.color = Color.black;
+				}
+			}else{
+				mouseCursor.sprite = defaultCursor;
+				mouseCursor.color = Color.black;
+			}
+
+		}
 	}
 
 	void OnGUI(){

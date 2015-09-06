@@ -23,6 +23,8 @@ public class WorldObject : MonoBehaviour {
 	protected Vector3 size;
 	public int  hitPoints, maxHitPoints;
 
+
+
 	public List<Resource> cost, rebuildValue, sellValue;
 	public List<List<Resource>> upgradeValues;
 
