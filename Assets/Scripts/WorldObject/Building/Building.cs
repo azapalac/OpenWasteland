@@ -17,7 +17,4 @@ public class Building : WorldObject {
 
 	}
 
-	protected override void OnGUI(){
-		base.OnGUI();
-	}
 }

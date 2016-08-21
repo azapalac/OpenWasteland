@@ -94,6 +94,7 @@ public class UserInput : MonoBehaviour {
 	}
 
 	private void LeftMouseClick(){
+
 		if(player.hud.MouseInBounds()){
 			Debug.Log ("Click!");
 			GameObject hitObject = FindHitObject();
@@ -109,7 +110,11 @@ public class UserInput : MonoBehaviour {
 					}
 
 				}
-			}
+            }
+            else
+            {
+                Debug.Log("Mouse error");
+            }
 
 		}
 	}

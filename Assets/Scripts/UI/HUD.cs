@@ -8,12 +8,13 @@ public class HUD : MonoBehaviour {
 
 	//Change color based on allegiance to player
 	public GameObject selectionBox;
+    public GameObject radius;
 	private SpriteRenderer selectionBoxRenderer;
 	private Vector3 size;
 	private const int ORDERS_BAR_WIDTH = 150, RESOURCE_BAR_HEIGHT = 40;
 	private Player player;
 	public Text nameField;
-	
+    private bool paused;
 	public Image mouseCursor;
 	public Sprite defaultCursor, moveCursor, attackCursor, selectCursor, harvestCursor;
 
@@ -28,10 +29,24 @@ public class HUD : MonoBehaviour {
 		//size = this.gameObject.GetComponent<Collider>().bounds.size;
 		//Debug.Log ("Size: " + size);
 		ResourceManager.StoreSelectionBoxItems(selectionBox);
+        ResourceManager.StoreRadiusItems(radius);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !paused)
+        {
+            Time.timeScale = 0;
+            Cursor.visible = true;
+            paused = true;
+        }else if(Input.GetKeyDown(KeyCode.Escape) && paused)
+        {
+            Time.timeScale = 1;
+            Cursor.visible = false;
+            paused = false;
+        }
+        
 		HandleGUI();
 	}
 
@@ -48,36 +63,57 @@ public class HUD : MonoBehaviour {
 		DrawMouseCursor();
 	}
 
-
+    //WELCOME TO RAYCAST HELL
 	private void DrawMouseCursor(){
 		mouseCursor.rectTransform.position  = Input.mousePosition;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-		if(player.SelectedObject){
+        //standard behavior
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.layer == ResourceManager.WorldObjectLayer)
+            {
+                //Should be red for enemies (At War), green for allies, and yellow for neutral
+                mouseCursor.sprite = selectCursor;
+                mouseCursor.color = Color.green;
+            } else {
+                mouseCursor.sprite = defaultCursor;
+                mouseCursor.color = Color.black;
+            }
 
+        }
+        else {
+            mouseCursor.sprite = defaultCursor;
+            mouseCursor.color = Color.black;
+        }
 
-		}else{
+        //If an object is selected, override cursor
+        if (player.SelectedObject){
 
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			if(Physics.Raycast (ray, out hit)){
-				if(hit.collider.gameObject.layer == ResourceManager.WorldObjectLayer){
-					mouseCursor.sprite = selectCursor;
-					mouseCursor.color = Color.green;
-				}else{
-					mouseCursor.sprite = defaultCursor;
-					mouseCursor.color = Color.black;
-				}
-			}else{
-				mouseCursor.sprite = defaultCursor;
-				mouseCursor.color = Color.black;
-			}
+            if(Physics.Raycast(ray, out hit)){
+                
+                if (player.SelectedObject.CanDo("Move") && hit.collider.gameObject.name == "Ground")
+                {
+                    mouseCursor.sprite = moveCursor;
+                    mouseCursor.color = Color.black;
+                }
 
+                //check if the object is harvestable
+                if (hit.collider.gameObject.GetComponent<HarvestableObject>() != null)
+                {
+                    HarvestableObject h = hit.collider.gameObject.GetComponent<HarvestableObject>();
+                    if (player.SelectedObject.CanDo("Harvest " + h.type))
+                    {
+                        mouseCursor.sprite = harvestCursor;
+                        mouseCursor.color = Color.yellow;
+                    }
+                }
+            }
 		}
 	}
 
-	void OnGUI(){
 
-	}
 
 	public bool MouseInBounds(){
 
