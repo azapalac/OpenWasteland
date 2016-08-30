@@ -100,7 +100,7 @@ public class UserInput : MonoBehaviour {
 			GameObject hitObject = FindHitObject();
 			Vector3 hitPoint = FindHitPoint();
 			if(hitObject && hitPoint != ResourceManager.InvalidPosition){
-				if(player.SelectedObject) player.SelectedObject.MouseClick(hitObject, hitPoint, player);
+				if(player.SelectedObject) player.SelectedObject.LeftMouseClick(hitObject, hitPoint, player);
 				else if(hitObject.name != "Ground"){
 					WorldObject worldObject = hitObject.GetComponent<WorldObject>();
 
@@ -119,7 +119,29 @@ public class UserInput : MonoBehaviour {
 		}
 	}
 
-	private GameObject FindHitObject(){
+    private void RightMouseClick()
+    {
+        if (player.hud.MouseInBounds() && player.SelectedObject)
+        {
+            GameObject hitObject = FindHitObject();
+            Vector3 hitPoint = FindHitPoint();
+            if (hitObject && hitPoint != ResourceManager.InvalidPosition)
+            {
+                if (player.SelectedObject) player.SelectedObject.RightMouseClick(hitObject, hitPoint, player);
+                else
+                {
+                    //Bring up default right click stuff, if there is any
+                }
+
+            }
+            else
+            {
+                Debug.Log("Mouse error");
+            }
+        }
+    }
+
+    private GameObject FindHitObject(){
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast (ray, out hit)){ 
@@ -138,10 +160,5 @@ public class UserInput : MonoBehaviour {
 		return ResourceManager.InvalidPosition;
 	}
 
-	private void RightMouseClick(){
-		if(player.hud.MouseInBounds() && !Input.GetKey (KeyCode.LeftAlt) && player.SelectedObject){
-			player.SelectedObject.SetSelection(false);
-			player.SelectedObject = null;
-		}
-	}
+
 }

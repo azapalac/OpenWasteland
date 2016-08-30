@@ -2,6 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 namespace RTS {
+    public enum Rarity
+    {
+        Junk,
+        Common,
+        Uncommon,
+        Rare,
+        Treasured,
+        Legendary,
+        Unobtanium
+    }
+
 
     public static class ResourceManager {
         
@@ -47,11 +58,20 @@ namespace RTS {
                 {
                     {"Iron", new Resource { name = "Iron", rarity = Rarity.Uncommon, TechLevel = 1} },
                     {"Stone", new Resource { name = "Stone", rarity = Rarity.Common, TechLevel = 0} },
+                    {"Charcoal", new Resource {name = "Charcoal", rarity = Rarity.Common, TechLevel = 0 } },
                     {"Scrap", new Resource { name = "Scrap", rarity = Rarity.Junk, TechLevel = 0} },
+                    {"Food", new Resource { name = "Food", rarity = Rarity.Common, TechLevel = 0} },
+                    {"Water", new Resource { name = "Water", rarity = Rarity.Common, TechLevel = 0} },
+                    {"Steel", new Resource { name = "Steel", rarity = Rarity.Rare, TechLevel = 2} },
                 };
             }
         }
-
+        public static Resource GetResource(int amount, string name)
+        {
+            Resource r = GetResource(name);
+            r.dropAmount = amount;
+            return r;
+        }
         public static Resource GetResource(string name)
         {
             if (allResources.ContainsKey(name))
@@ -133,50 +153,17 @@ namespace RTS {
             }
         }
 
-        
-        private static Dictionary<string, GameObject> PackPrefabs
-            {
-
-            get { return new Dictionary<string, GameObject>(); }
-            }
-    }
-    public class ActionManager {
-
-        private static List<string> allActions
+        public static Dictionary<string, WorldObject> BaseWorldObjects
         {
             get
             {
-                return new List<string> {
-                    //Basic Action categories
-                    "Move",
-                    "Attack",
-                    "Take Damage",
-                    "Pick Up Resources",
-                    //Harvest actions
-                    "Harvest Junk",
-                    "Harvest Stone"
+                return new Dictionary<string, WorldObject>
+                {
 
                 };
             }
-
         }
-
-            //Adds the string only if the list contains it. Use instead of the standard add function
-            public static void AddAction(List<string> actionList, string s)
-            {
-                if (allActions.Contains(s)) {
-                    actionList.Add(s);
-                }else{
-                    Debug.Log("Error! Requested action not found!");
-                }
-
-            }
-        
-
-
-        
-
-
-
     }
+
+
 }

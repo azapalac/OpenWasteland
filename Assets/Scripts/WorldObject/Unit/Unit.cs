@@ -3,7 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 using RTS;
 public class Unit : WorldObject {
-
+    public int populationCost;
+    public string unitType { get; set; }
 	protected override void Awake(){
 
 		base.Awake();

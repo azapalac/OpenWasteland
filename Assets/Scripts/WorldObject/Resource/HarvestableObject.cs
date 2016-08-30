@@ -8,12 +8,7 @@ public class HarvestableObject : WorldObject {
     protected override void Start()
     {
         base.Start();
-        //Get type from database dictionary, based on name
-        //i.e. "Large Scrap pile" -> "Scrap"
-
-        //
         ActionManager.AddAction(actions, "Take Damage");
-
     }
 
 
@@ -80,8 +75,16 @@ public class HarvestableObject : WorldObject {
 
     public GameObject SpawnLootPack(Resource resource)
     {
-        
-        GameObject LootPack = GameManager.PrefabDictionary[resource.name];
+        GameObject LootPack = new GameObject();
+
+        if (GameManager.DropDictionary.ContainsKey(resource.name))
+        {
+            LootPack = GameManager.DropDictionary[resource.name];
+        }
+        else
+        {
+            Debug.LogError("Resource not contained in drop dictionary");
+        }
 
         
         return LootPack;

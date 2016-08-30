@@ -13,18 +13,16 @@ public class Resource{
 	public override string ToString(){
 		return "  " + dropAmount + " " + name;
 	}
+
+    public WorldObject UnPack()
+    {
+        return new WorldObject();
+    }
 }
 
-public enum Rarity
-{
-    Junk,
-    Common,
-    Uncommon,
-    Rare, 
-    Treasured,
-    Legendary,
-    Unobtanium
-}
+
+
+//A world object is a unit, structure, or resource
 public class WorldObject : MonoBehaviour {
     public enum Size
     {
@@ -35,26 +33,39 @@ public class WorldObject : MonoBehaviour {
         Massive,
         Gigantic
     }
+
+    //Stats
+    public int attackDamage;
+    public int armor { get; set; }
+    public float attackSpeed { get; set; }
+    public int healthRegenRate;
+    public int maxHitPoints;
+    public float moveSpeed;
+    public float maxRange;
+
     public Size size;
 	public string objectName;
 	public Image buildImage;
 	public Image ordersBar;
-    int techLevel;
+    public int techLevel;
 	public Vector3 center;
-	public Button[] commands;
+    public List<GameObject> commandButtons;
 	protected GameObject selectionBoxTemplate, selectionBox;
 	protected SpriteRenderer selectionBoxRenderer;
 	protected Vector3 scale;
-	public int  hitPoints, maxHitPoints;
-    public int attackDamage;
-    public float moveSpeed;
-    public Vector3 source, destination;
+    public int hitPoints;
 
-	public List<Resource> cost, rebuildValue, sellValue, resourceYield, resourceInventory;
-	public List<List<Resource>> upgradeValues;
-    public float maxRange;
+    public Vector3 source, destination;
+    public List<Blueprint> loadedBlueprints;
+    public int blueprintLimit;
+
+    public Dictionary<string, Blueprint> activeBlueprints;
+    public List<Resource> rebuildValue, sellValue, resourceYield, resourceInventory;
+    public Dictionary<string, float> currentActionTimers;
+    public List<string> activeActionList;
 	public Player owner;
-	protected List<string> actions;
+	public List<string> actions;
+
 	protected bool currentlySelected = false;
 	//public List<
 	// Use this for initialization
@@ -74,7 +85,10 @@ public class WorldObject : MonoBehaviour {
 		selectionBox.transform.localScale = scale;
 		selectionBoxRenderer = selectionBox.GetComponent<SpriteRenderer>();
 		selectionBox.transform.parent = this.transform.root;
-
+        loadedBlueprints = new List<Blueprint>();
+        activeBlueprints = new Dictionary<string, Blueprint>();
+        currentActionTimers = new Dictionary<string, float>();
+        activeActionList = new List<string>();
         
 	}
 
@@ -89,7 +103,11 @@ public class WorldObject : MonoBehaviour {
             dir.Normalize();
             transform.Translate(dir * moveSpeed * Time.deltaTime);
         }
-
+        for(int i = 0; i < activeActionList.Count; i++)
+        {
+            this.ContinueAction(activeActionList[i]);
+        }
+        
     }
 
     protected float scalingFactor
@@ -122,19 +140,7 @@ public class WorldObject : MonoBehaviour {
         Debug.Log("Attacking");
         otherObject.TakeDamage(attackDamage);
     }
-    public virtual void TakeDamage(int damage)
-    {
-        //Override this once shields and armor are figured out (for units)
-        if(CanDo("Take Damage"))
-        {
-            hitPoints -= damage;
-            if(hitPoints <= 0)
-            {
-                //Change this later
-                Destroy();
-            }
-        }
-    }
+
 	public void SetSelection(bool selected){
 		currentlySelected = selected;
 
@@ -148,6 +154,11 @@ public class WorldObject : MonoBehaviour {
     {
         resourceInventory.Add(loot.containedResource);
         Destroy(loot.gameObject);
+    }
+
+    public Resource Pack()
+    {
+        return new Resource();
     }
 
     public virtual void Destroy()
@@ -166,35 +177,60 @@ public class WorldObject : MonoBehaviour {
 
     ///TODO: Refactor this to work with context sensitive clicking
     ///For now, basic is just fine
-	public virtual void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller){
+	public virtual void LeftMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller){
         //Only handle input if currently selected
         if (currentlySelected && hitObject.name != "Ground")
         {
             WorldObject worldObject = hitObject.transform.root.GetComponent<WorldObject>();
 
-            //if (worldObject) ChangeSelection(worldObject, controller);
+            if (worldObject) ChangeSelection(worldObject, controller);
         }
+      
+	}
+
+    public virtual void RightMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller )
+    {
+
 
         if (currentlySelected && hitObject.name == "Ground")
         {
             //Move the object, if possible
-            if (CanDo("Move"))
-            {
-                source = transform.position;
-                destination = hitPoint;
-            }
-        }
+            StartMoving(hitPoint);
 
-         if (currentlySelected && hitObject.tag == "Resource")
+        }else if(currentlySelected && hitObject.layer == ResourceManager.WorldObjectLayer)
         {
-            if (CanDo("Harvest " + hitObject.GetComponent<HarvestableObject>().type))
+            WorldObject worldObject = hitObject.GetComponent<WorldObject>();
+            //if the object is owned by someone
+            if(worldObject.owner != null)
             {
-                DealDamage(hitObject.GetComponent<HarvestableObject>());
+                //Determine action based on allegiance
+                if(worldObject.owner == controller)
+                {
+                    //Move to the friendly unit or building
+                    //If carrying resources, drop them off
+                }
+            }
+            if (hitObject.tag == "Resource")
+            {
+                if (CanDo("Harvest " + hitObject.GetComponent<HarvestableObject>().type))
+                {
+                    DealDamage(hitObject.GetComponent<HarvestableObject>());
+                }
             }
         }
-	}
+    }
+    protected void StartAttacking(Vector3 enemyPoint)
+    {
 
-
+    }
+    protected void StartMoving(Vector3 hitPoint)
+    {
+        if (CanDo("Move"))
+        {
+            source = transform.position;
+            destination = hitPoint;
+        }
+    }
 	private void ChangeSelection(WorldObject worldObject, Player controller){
 		SetSelection(false);
 		if(controller.SelectedObject) controller.SelectedObject.SetSelection(false);

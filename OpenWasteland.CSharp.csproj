@@ -66,8 +66,13 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Player\UserInput.cs" />
+    <Compile Include="Assets\Scripts\RTS\ActionManager.cs" />
+    <Compile Include="Assets\Scripts\RTS\BaseCamp.cs" />
+    <Compile Include="Assets\Scripts\RTS\Blueprint.cs" />
+    <Compile Include="Assets\Scripts\RTS\Mod.cs" />
     <Compile Include="Assets\Scripts\RTS\ResourceManager.cs" />
     <Compile Include="Assets\Scripts\RTS\ResourcePack.cs" />
+    <Compile Include="Assets\Scripts\UI\ConstructionButton.cs" />
     <Compile Include="Assets\Scripts\UI\HUD.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Building\Building.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Building\Well.cs" />

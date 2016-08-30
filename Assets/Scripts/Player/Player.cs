@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
+using RTS;
 public class Player : MonoBehaviour {
 
 	public string username;
@@ -8,6 +8,8 @@ public class Player : MonoBehaviour {
 	public HUD hud;
 	public bool objectIsSelected = false;
 	public WorldObject SelectedObject { get; set;}
+    public Dictionary<string, Blueprint> knownBlueprints;
+    public int knowledgeLimit;
 
     public enum status
     {
@@ -36,6 +38,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         knownPlayers = new Dictionary<string, status>();
+
 		hud = GetComponentInChildren<HUD>();
 	}
 	
