@@ -98,7 +98,7 @@ namespace RTS
             obj.activeActionList.Remove("Construct Unit");
             
             //Start next project, if there's already one in the queue
-            if(obj.queuedConstructionProjects.Count > 0)
+            while(obj.queuedConstructionProjects.Count > 0 && obj.activeBlueprints.Count < obj.activeBlueprintLimit)
             {
                 int nextProjectIndex = obj.queuedConstructionProjects.Count - 1;
                 ConstructionProject nextProject = obj.queuedConstructionProjects[nextProjectIndex];

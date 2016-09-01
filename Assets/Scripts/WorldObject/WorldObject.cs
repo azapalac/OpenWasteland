@@ -64,7 +64,7 @@ public class WorldObject : MonoBehaviour {
     public int blueprintLimit;
 
     //Limit to the number of active construction projects
-    public int activeBlueprintLimit = 1;
+    public int activeBlueprintLimit = 3;
 
     //Limit to the number of queued actions
     public int constructionQueueLimit = 5;

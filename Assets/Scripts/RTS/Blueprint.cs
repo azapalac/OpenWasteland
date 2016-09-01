@@ -75,7 +75,7 @@ namespace RTS
                         ObjectManager.GetResource(10,"Scrap"),
                         ObjectManager.GetResource(5, "Stone")
                     },
-                    ConstructionTime = 5f,
+                    ConstructionTime = 10f,
                     product = GameManager.WorldObjectDictionary["Harvester"],
 
                 } },

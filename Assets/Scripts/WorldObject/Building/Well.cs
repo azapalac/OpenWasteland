@@ -12,6 +12,7 @@ public class Well : Building {
         radius.transform.parent = this.transform;
         radius.transform.localScale *= radiusScale;
         blueprintLimit = 2;
+        activeBlueprintLimit = 3;
         ActionManager.AddAction(actions, "Construct Unit");
         this.LoadBlueprint(BlueprintManager.BaseBlueprintDictionary["Harvester"]);
     }
