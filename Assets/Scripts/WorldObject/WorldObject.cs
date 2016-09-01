@@ -20,7 +20,11 @@ public class Resource{
     }
 }
 
-
+public class ConstructionProject{
+    public float timer;
+    public string currentAction;
+    public Blueprint blueprint;
+}
 
 //A world object is a unit, structure, or resource
 public class WorldObject : MonoBehaviour {
@@ -59,10 +63,19 @@ public class WorldObject : MonoBehaviour {
     public List<Blueprint> loadedBlueprints;
     public int blueprintLimit;
 
-    public Dictionary<string, Blueprint> activeBlueprints;
+    //Limit to the number of active construction projects
+    public int activeBlueprintLimit = 1;
+
+    //Limit to the number of queued actions
+    public int constructionQueueLimit = 5;
+
     public List<Resource> rebuildValue, sellValue, resourceYield, resourceInventory;
-    public Dictionary<string, float> currentActionTimers;
+
+    public List<Blueprint> activeBlueprints;
+    public List <float> currentActionTimers;
     public List<string> activeActionList;
+    public List<ConstructionProject> queuedConstructionProjects;
+
 	public Player owner;
 	public List<string> actions;
 
@@ -86,10 +99,11 @@ public class WorldObject : MonoBehaviour {
 		selectionBoxRenderer = selectionBox.GetComponent<SpriteRenderer>();
 		selectionBox.transform.parent = this.transform.root;
         loadedBlueprints = new List<Blueprint>();
-        activeBlueprints = new Dictionary<string, Blueprint>();
-        currentActionTimers = new Dictionary<string, float>();
+
+        activeBlueprints = new List <Blueprint>();
+        currentActionTimers = new List <float>();
         activeActionList = new List<string>();
-        
+        queuedConstructionProjects = new List<ConstructionProject>();
 	}
 
 	// Update is called once per frame
@@ -103,9 +117,10 @@ public class WorldObject : MonoBehaviour {
             dir.Normalize();
             transform.Translate(dir * moveSpeed * Time.deltaTime);
         }
+
         for(int i = 0; i < activeActionList.Count; i++)
         {
-            this.ContinueAction(activeActionList[i]);
+            this.ContinueAction(i);
         }
         
     }

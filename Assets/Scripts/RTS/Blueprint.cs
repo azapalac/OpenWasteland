@@ -13,7 +13,7 @@ namespace RTS
         public int TechLevel { get; set; }
         public List<Resource> Ingredients {get; set;}
         public int KnowledgePoints { get; set;}
-
+       
     }
 
     public class ConstructionBlueprint: Blueprint
@@ -34,7 +34,7 @@ namespace RTS
     public class BlueprintManager
     {
         private static KeyValuePair<string, ConstructionBlueprint> MakeBlueprint(
-            string name, int populationCost, int techLevel, List<Resource> ingredients)
+            string name, int populationCost, int techLevel, List<Resource> ingredients, float constructionTime)
         {
             return new KeyValuePair<string, ConstructionBlueprint>(name, new ConstructionBlueprint
             {
@@ -42,51 +42,57 @@ namespace RTS
                 TechLevel = techLevel,
                 populationCost = populationCost,
                 Ingredients = ingredients,
-                product = GameManager.WorldObjectDictionary[name]
+                product = GameManager.WorldObjectDictionary[name],
+                ConstructionTime = constructionTime
 
             });
         }
 
         private static KeyValuePair<string, CraftingBlueprint> MakeBlueprint(
-           string name,  int techLevel, List<Resource> ingredients, Resource product)
+           string name,  int techLevel, List<Resource> ingredients, float constructionTime, Resource product)
         {
             return new KeyValuePair<string, CraftingBlueprint>(name, new CraftingBlueprint
             {
                 Name = name,
                 TechLevel = techLevel,
                 Ingredients = ingredients,
-                Product = product
-
+                Product = product,
+                ConstructionTime = constructionTime
             });
         }
-        /*
-           new List<Resource> {
-                        ObjectManager.GetResource(20,"Scrap"),
-                        ObjectManager.GetResource(5, "Stone")
-
-        */
 
         public static Dictionary<string, Blueprint> BaseBlueprintDictionary;
         public static void SetUpBlueprintDictionary()
         {
-            BaseBlueprintDictionary = new Dictionary<string, Blueprint>();
-            KeyValuePair<string, ConstructionBlueprint> constructionKeyValue;
-            KeyValuePair<string, CraftingBlueprint> craftingKeyValue;
-
-            //Example of a unit construction blueprint
-                constructionKeyValue =  MakeBlueprint("Harvester", 1, 0, 
-              new List<Resource> {
+            BaseBlueprintDictionary = new Dictionary<string, Blueprint>()
+            {
+                //Example of a unit construction blueprint
+                {"Harvester", new ConstructionBlueprint {
+                    Name = "Harvester",
+                    populationCost = 1,
+                    TechLevel = 0,
+                    Ingredients = new List<Resource> {
                         ObjectManager.GetResource(10,"Scrap"),
-                        ObjectManager.GetResource(5, "Stone") } );
-            BaseBlueprintDictionary.Add(constructionKeyValue.Key, constructionKeyValue.Value);
+                        ObjectManager.GetResource(5, "Stone")
+                    },
+                    ConstructionTime = 5f,
+                    product = GameManager.WorldObjectDictionary["Harvester"],
 
-            //
-            craftingKeyValue = MakeBlueprint("Iron", 0,
-            new List<Resource> {
-                ObjectManager.GetResource(20,"Scrap")
-            },
-             ObjectManager.GetResource(5, "Iron"));
-            BaseBlueprintDictionary.Add(craftingKeyValue.Key, craftingKeyValue.Value);
+                } },
+
+                //Example of a crafting blueprint
+                {"Iron", new CraftingBlueprint {
+                    Name = "Iron",
+                    TechLevel = 0,
+                    Ingredients = new List<Resource>
+                    {
+                        ObjectManager.GetResource(20, "Scrap")
+                    },
+                    ConstructionTime = 3f,
+                    Product = ObjectManager.GetResource(5, "Iron")
+
+                } }
+            };
         }
 
     }

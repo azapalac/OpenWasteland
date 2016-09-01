@@ -68,45 +68,65 @@ namespace RTS
         {
             if(obj.CanDo("Construct Unit"))
             {
-                obj.currentActionTimers.Add("Construct Unit", constructionBlueprint.ConstructionTime);
-                obj.activeBlueprints.Add("Construct Unit", constructionBlueprint);
-                obj.activeActionList.Add(constructionBlueprint.Name);
+                if (obj.activeBlueprints.Count < obj.activeBlueprintLimit)
+                {
+                    obj.currentActionTimers.Add(constructionBlueprint.ConstructionTime);
+                    obj.activeBlueprints.Add(constructionBlueprint);
+                    obj.activeActionList.Add("Construct Unit");
+                }else if (obj.queuedConstructionProjects.Count < obj.constructionQueueLimit)
+                {
+                    ConstructionProject p = new ConstructionProject();
+                    p.timer = constructionBlueprint.ConstructionTime;
+                    p.blueprint = constructionBlueprint;
+                    p.currentAction = "Construct Unit";
+                    obj.queuedConstructionProjects.Add(p);
+                }
             }
         }
 
-        public static Blueprint GetActiveBlueprint(this WorldObject obj, string s)
-        {
-            return obj.activeBlueprints[s];
-        }
 
-        public static void FinishUnitConstruction(this WorldObject obj)
+        public static void FinishUnitConstruction(this WorldObject obj, int index)
         {
-            ConstructionBlueprint b = obj.GetActiveBlueprint("Construct Unit") as ConstructionBlueprint;
-            GameObject G = GameObject.Instantiate(b.product, obj.gameObject.transform.position, Quaternion.identity) as GameObject;
+            ConstructionBlueprint b = obj.activeBlueprints[index] as ConstructionBlueprint;
+
+            //Create a spawn vector - this should be a constant value.
+            Vector3 spawnVect = new Vector3(5, 0, 0);
+            GameObject G = GameObject.Instantiate(b.product, obj.gameObject.transform.position + spawnVect, Quaternion.identity) as GameObject;
             //Remove from dictionary
-            obj.activeBlueprints.Remove("Construct Unit");
-            obj.currentActionTimers.Remove("Construct Unit");
-            obj.activeActionList.Remove(b.Name);
+            obj.activeBlueprints.Remove(b);
+            obj.currentActionTimers.Remove(obj.currentActionTimers[index]);
+            obj.activeActionList.Remove("Construct Unit");
+            
+            //Start next project, if there's already one in the queue
+            if(obj.queuedConstructionProjects.Count > 0)
+            {
+                int nextProjectIndex = obj.queuedConstructionProjects.Count - 1;
+                ConstructionProject nextProject = obj.queuedConstructionProjects[nextProjectIndex];
+                obj.StartUnitConstruction(nextProject.blueprint);
+                obj.queuedConstructionProjects.Remove(nextProject);
+            }
         }
   
 
-        public static void ContinueAction(this WorldObject obj, string action)
+        public static void ContinueAction(this WorldObject obj, int index)
         {
             //This needs MAJOR refactoring
-            // obj.currentActionTimers[action] -= Time.deltaTime;
-            /*  if(obj.currentActionTimers[action] <= 0)
+            string action = obj.activeActionList[index];
+            obj.currentActionTimers[index] -= Time.deltaTime;
+             if(obj.currentActionTimers[index] <= 0)
               {
                   switch (action)
                   {
                       case "Construct Unit":
-                          obj.FinishUnitConstruction();
+                          obj.FinishUnitConstruction(index);
                           break;
+
+                        
 
                       default:
                           break;
                   }
-              }*/
-            obj.FinishUnitConstruction();
+              }
         }
 
     }
