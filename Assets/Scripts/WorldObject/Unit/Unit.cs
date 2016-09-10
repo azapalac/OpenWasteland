@@ -15,6 +15,8 @@ public class Unit : WorldObject {
         ActionManager.AddAction(actions, "Move");
         ActionManager.AddAction(actions, "Harvest Junk");
         ActionManager.AddAction(actions, "Pick Up Resources");
+        //Units are group selectable
+        owner.selectableUnits.Add(this.gameObject);
     }
 
 

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
     public GameObject[] baseWorldObjectPrefabList;
     public static GameObject[] baseWorldObjects;
 
+   
 
     void Awake()
     {

@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
 	public WorldObject SelectedObject { get; set;}
     public Dictionary<string, Blueprint> knownBlueprints;
     public int knowledgeLimit;
+    public List<GameObject> selectableUnits;
 
     public enum status
     {
@@ -36,9 +37,13 @@ public class Player : MonoBehaviour {
         return knownPlayers[playername];
     }
 	// Use this for initialization
+    void Awake()
+    {
+        //selectableUnits = new List<GameObject>();
+    }
 	void Start () {
         knownPlayers = new Dictionary<string, status>();
-
+        
 		hud = GetComponentInChildren<HUD>();
 	}
 	

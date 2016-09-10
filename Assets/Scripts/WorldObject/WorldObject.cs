@@ -83,8 +83,9 @@ public class WorldObject : MonoBehaviour {
 	//public List<
 	// Use this for initialization
 	protected virtual void Awake(){
-
-	}
+        //CHANGE THIS LATER
+        owner = GameObject.Find("Player").GetComponent<Player>();
+    }
 	protected virtual void Start () {
         actions = new List<string>();
         resourceInventory = new List<Resource>();
@@ -99,6 +100,8 @@ public class WorldObject : MonoBehaviour {
 		selectionBoxRenderer = selectionBox.GetComponent<SpriteRenderer>();
 		selectionBox.transform.parent = this.transform.root;
         loadedBlueprints = new List<Blueprint>();
+
+        
 
         activeBlueprints = new List <Blueprint>();
         currentActionTimers = new List <float>();

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UserInput : MonoBehaviour {
 	private Player player;
 	private Camera mainCamera;
+    private Vector3 origMousePos;
 	// Use this for initialization
 	void Start () {
 		player = transform.root.GetComponent<Player>();
@@ -89,16 +90,37 @@ public class UserInput : MonoBehaviour {
 	}
 
 	private void MouseActivity(){
-		if(Input.GetMouseButtonDown(0)) LeftMouseClick();
-		else if(Input.GetMouseButtonDown(1)) RightMouseClick();
+        if (Input.GetMouseButtonDown(0))
+        {
+            origMousePos = Input.mousePosition;
+            player.hud.StartMultiSelect(Input.mousePosition);
+            LeftMouseClick();
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            RightMouseClick();
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            player.hud.DrawMultiSelect(origMousePos, Input.mousePosition);
+        }
+        else
+        {
+            player.hud.EndMultiSelect();
+        }
+		
+		
 	}
 
 	private void LeftMouseClick(){
 
 		if(player.hud.MouseInBounds()){
+
 			Debug.Log ("Click!");
 			GameObject hitObject = FindHitObject();
 			Vector3 hitPoint = FindHitPoint();
+
 			if(hitObject && hitPoint != ResourceManager.InvalidPosition){
 				if(player.SelectedObject) player.SelectedObject.LeftMouseClick(hitObject, hitPoint, player);
 				else if(hitObject.name != "Ground"){
