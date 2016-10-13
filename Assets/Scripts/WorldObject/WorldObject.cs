@@ -251,8 +251,10 @@ public class WorldObject : MonoBehaviour {
     }
 	private void ChangeSelection(WorldObject worldObject, Player controller){
 		SetSelection(false);
-		if(controller.SelectedObject) controller.SelectedObject.SetSelection(false);
-		controller.SelectedObject = worldObject;
+        if (controller.ObjectSelected()) {
+            controller.SelectedObjects.Remove(this);
+        }
+		controller.SelectedObjects.Add(worldObject);
 		worldObject.SetSelection(true);
 	}
 }

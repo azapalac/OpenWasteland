@@ -40,9 +40,47 @@ namespace RTS {
         private static Vector3 invalidPosition = new Vector3(-99999, -99999, -99999);
         public static Vector3 InvalidPosition { get { return invalidPosition; } }
 
+        static Texture2D whiteTexture;
+        public static Texture2D WhiteTexture
+        {
+            get
+            {
+                if (whiteTexture == null)
+                {
+                    whiteTexture = new Texture2D(1, 1);
+                    whiteTexture.SetPixel(0, 0, Color.white);
+                    whiteTexture.Apply();
+                }
+                return whiteTexture;
+            }
+        }
+        public static void DrawScreenRect(Rect rect, Color color)
+        {
+            GUI.color = color;
+            GUI.DrawTexture(rect, WhiteTexture);
+            GUI.color = Color.white;
+        }
 
+        public static Rect GetScreenRect(Vector3 screenPosition1, Vector3 screenPosition2)
+        {
+            // Move origin from bottom left to top left
+            screenPosition1.y = Screen.height - screenPosition1.y;
+            screenPosition2.y = Screen.height - screenPosition2.y;
+            // Calculate corners
+            var topLeft = Vector3.Min(screenPosition1, screenPosition2);
+            var bottomRight = Vector3.Max(screenPosition1, screenPosition2);
+            // Create Rect
+            return Rect.MinMaxRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
+        }
+
+        public static Color selectionColor
+        {
+            get
+            {
+                return new Color(0, 1, 0, 0.5f);
+            }
+        }
     }
-
 
 
     public class ObjectManager

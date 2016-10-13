@@ -41,12 +41,13 @@ namespace RTS
 
         }
 
-        public static void LoadBlueprint(this WorldObject obj, Blueprint b)
+        public static void LoadBlueprint(this WorldObject obj, Blueprint blueprint)
         {
-            obj.loadedBlueprints.Add(b);
-            GameObject button = GameObject.Instantiate(GameManager.ConstructionButton) as GameObject;
+            obj.loadedBlueprints.Add(blueprint);
+            GameObject button = GameObject.Instantiate(GameManager.ConstructionButton, Vector3.zero, Quaternion.identity) as GameObject;
             ConstructionButton cb = button.GetComponent<ConstructionButton>();
-            cb.SetUp(b, obj);
+            button.transform.Translate(new Vector3(7 * Screen.width / 8, Screen.height / 2));
+            cb.SetUp(blueprint, obj);
         }
 
         //Add overrides for this

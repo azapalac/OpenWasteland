@@ -12,6 +12,10 @@ public class Player : MonoBehaviour {
     public int knowledgeLimit;
     public List<GameObject> selectableUnits;
 
+    public List<WorldObject> SelectedObjects { get; set; }
+
+
+
     public enum status
     {
         NotFound,
@@ -39,6 +43,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
     void Awake()
     {
+        SelectedObjects = new List<WorldObject>();
         //selectableUnits = new List<GameObject>();
     }
 	void Start () {
@@ -47,6 +52,11 @@ public class Player : MonoBehaviour {
 		hud = GetComponentInChildren<HUD>();
 	}
 	
+    //Returns true if at least one object is selected
+    public bool ObjectSelected()
+    {
+        return SelectedObjects.Count != 0;
+    }
 	// Update is called once per frame
 	void Update () {
 	

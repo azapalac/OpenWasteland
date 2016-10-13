@@ -5,11 +5,11 @@ using RTS;
 
 public class HUD : MonoBehaviour {
     public Image ordersBar;
-    public GameObject multiSelect;
     private Image multiSelectImage;
     private const float renderWidth = 20.0f;
-	//Change color based on allegiance to player
+    //Change color based on allegiance to player
 	public GameObject selectionBox;
+    private Rect selectionRect;
     public GameObject radius;
 	private SpriteRenderer selectionBoxRenderer;
 	private Vector3 size;
@@ -33,7 +33,7 @@ public class HUD : MonoBehaviour {
         ResourceManager.StoreRadiusItems(radius);
 
        
-        multiSelectImage = multiSelect.GetComponent<Image>();
+   
         //multiSelect.SetActive(false);
 
     }
@@ -57,9 +57,10 @@ public class HUD : MonoBehaviour {
 	}
 
 	void HandleGUI(){
+        //Work on this later!!!
 		string selectionName = "";
-		if(player.SelectedObject){
-			selectionName  = player.SelectedObject.objectName;
+		if(player.ObjectSelected()){
+			selectionName  = player.SelectedObjects[0].objectName;
 		}
 		
 		if(!selectionName.Equals("")){
@@ -95,24 +96,29 @@ public class HUD : MonoBehaviour {
         }
 
         //If an object is selected, override cursor
-        if (player.SelectedObject){
+        if (player.ObjectSelected()){
 
             if(Physics.Raycast(ray, out hit)){
-                
-                if (player.SelectedObject.CanDo("Move") && hit.collider.gameObject.name == "Ground")
+                //Change the cursor if  ANY selected object can do the thing
+                for (int i = 0; i < player.SelectedObjects.Count; i++)
                 {
-                    mouseCursor.sprite = moveCursor;
-                    mouseCursor.color = Color.black;
-                }
-
-                //check if the object is harvestable
-                if (hit.collider.gameObject.GetComponent<HarvestableObject>() != null)
-                {
-                    HarvestableObject h = hit.collider.gameObject.GetComponent<HarvestableObject>();
-                    if (player.SelectedObject.CanDo("Harvest " + h.type))
+                    if (player.SelectedObjects[i].CanDo("Move") && hit.collider.gameObject.name == "Ground")
                     {
-                        mouseCursor.sprite = harvestCursor;
-                        mouseCursor.color = Color.yellow;
+                        mouseCursor.sprite = moveCursor;
+                        mouseCursor.color = Color.black;
+                        break;
+                    }
+
+                    //check if the object is harvestable
+                    if (hit.collider.gameObject.GetComponent<HarvestableObject>() != null)
+                    {
+                        HarvestableObject h = hit.collider.gameObject.GetComponent<HarvestableObject>();
+                        if (player.SelectedObjects[i].CanDo("Harvest " + h.type))
+                        {
+                            mouseCursor.sprite = harvestCursor;
+                            mouseCursor.color = Color.yellow;
+                            break;
+                        }
                     }
                 }
             }
@@ -121,35 +127,14 @@ public class HUD : MonoBehaviour {
 
     public void StartMultiSelect(Vector3 origin)
     {
-        multiSelect.SetActive(true);
-        multiSelectImage.rectTransform.anchoredPosition = origin;
     }
 
     public void EndMultiSelect()
     {
-        multiSelect.SetActive(false);
-        //multiSelectImage.rectTransform.anchoredPosition = Vector2.zero;
-        //multiSelectImage.rectTransform.sizeDelta = Vector2.zero;
     }
 
     public void DrawMultiSelect(Vector3 origMousePos, Vector3 currMousePos)
     {
-     
-        GameObject debugPrefab1 = GameObject.Instantiate(imagePrefab) as GameObject;
-        debugPrefab1.transform.SetParent(this.transform);
-        debugPrefab1.name = "1";
-
-        GameObject debugPrefab2 = GameObject.Instantiate(imagePrefab) as GameObject;
-        debugPrefab2.transform.SetParent(this.transform);
-        debugPrefab2.name = "2";
-
-        GameObject debugPrefab3 = GameObject.Instantiate(imagePrefab) as GameObject;
-        debugPrefab3.transform.SetParent(this.transform);
-        debugPrefab3.name = "3";
-
-        GameObject debugPrefab4 = GameObject.Instantiate(imagePrefab) as GameObject;
-        debugPrefab4.transform.SetParent(this.transform);
-        debugPrefab4.name = "4";
 
         Vector3 diff = currMousePos - origMousePos;
         Vector3 rectOrigin = Vector3.zero;
@@ -159,12 +144,6 @@ public class HUD : MonoBehaviour {
         Vector3 posBA = new Vector3(origMousePos.x + diff.x, origMousePos.y, 0);
         Vector3 posAB = new Vector3(origMousePos.x, origMousePos.y + diff.y, 0);
         
-       
-
-        debugPrefab1.GetComponent<Image>().rectTransform.position = origMousePos;
-        debugPrefab2.GetComponent<Image>().rectTransform.position = currMousePos;
-        debugPrefab3.GetComponent<Image>().rectTransform.position = posAB;
-        debugPrefab4.GetComponent<Image>().rectTransform.position = posBA;
 
         if(diff.x > 0 && diff.y > 0)
         {
@@ -186,9 +165,8 @@ public class HUD : MonoBehaviour {
         }
         
         Rect rect = new Rect(rectOrigin.x, rectOrigin.y, Mathf.Abs(diff.x), Mathf.Abs(diff.y));
-
-
-
+        ResourceManager.DrawScreenRect(ResourceManager.GetScreenRect(origMousePos, currMousePos), ResourceManager.selectionColor);
+       
         for (int i  = 0; i < player.selectableUnits.Count; ++i)
         {
             Vector3 screenPos = Camera.main.WorldToScreenPoint(player.selectableUnits[i].transform.position);
@@ -205,6 +183,7 @@ public class HUD : MonoBehaviour {
         }
 
     }
+
 
     public bool MouseInBounds(){
 

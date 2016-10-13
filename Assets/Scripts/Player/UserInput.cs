@@ -100,18 +100,16 @@ public class UserInput : MonoBehaviour {
         {
             RightMouseClick();
         }
+		
+	}
 
+    void OnGUI()
+    {
         if (Input.GetMouseButton(0))
         {
             player.hud.DrawMultiSelect(origMousePos, Input.mousePosition);
         }
-        else
-        {
-            player.hud.EndMultiSelect();
-        }
-		
-		
-	}
+    }
 
 	private void LeftMouseClick(){
 
@@ -122,16 +120,24 @@ public class UserInput : MonoBehaviour {
 			Vector3 hitPoint = FindHitPoint();
 
 			if(hitObject && hitPoint != ResourceManager.InvalidPosition){
-				if(player.SelectedObject) player.SelectedObject.LeftMouseClick(hitObject, hitPoint, player);
-				else if(hitObject.name != "Ground"){
-					WorldObject worldObject = hitObject.GetComponent<WorldObject>();
+                if (player.ObjectSelected()) {
+                    //Move all selected objects, not just one
+                    for (int i = 0; i < player.SelectedObjects.Count; i++) {
+                        player.SelectedObjects[i].LeftMouseClick(hitObject, hitPoint, player);
+                    }
+                }
+                else if (hitObject.name != "Ground")
+                {
+                    WorldObject worldObject = hitObject.GetComponent<WorldObject>();
 
-					if(worldObject){
-						player.SelectedObject = worldObject;
-						worldObject.SetSelection(true);
-					}
+                    if (worldObject)
+                    {
+                        player.SelectedObjects.Add(worldObject);
+                        worldObject.SetSelection(true);
+                        player.SelectedObjects.Add(worldObject);
+                    }
 
-				}
+                }
             }
             else
             {
@@ -143,13 +149,19 @@ public class UserInput : MonoBehaviour {
 
     private void RightMouseClick()
     {
-        if (player.hud.MouseInBounds() && player.SelectedObject)
+        if (player.hud.MouseInBounds())
         {
             GameObject hitObject = FindHitObject();
             Vector3 hitPoint = FindHitPoint();
             if (hitObject && hitPoint != ResourceManager.InvalidPosition)
             {
-                if (player.SelectedObject) player.SelectedObject.RightMouseClick(hitObject, hitPoint, player);
+                if (player.ObjectSelected())
+                {
+                    for (int i = 0; i < player.SelectedObjects.Count; i++)
+                    {
+                        player.SelectedObjects[i].RightMouseClick(hitObject, hitPoint, player);
+                    }
+                }
                 else
                 {
                     //Bring up default right click stuff, if there is any

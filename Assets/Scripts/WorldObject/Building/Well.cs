@@ -14,7 +14,7 @@ public class Well : Building {
         blueprintLimit = 2;
         activeBlueprintLimit = 3;
         ActionManager.AddAction(actions, "Construct Unit");
-       // this.LoadBlueprint(BlueprintManager.BaseBlueprintDictionary["Harvester"]);
+        this.LoadBlueprint(BlueprintManager.BaseBlueprintDictionary["Harvester"]);
     }
     public override void DrawSelection()
     {
