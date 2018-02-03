@@ -12,9 +12,6 @@ public class Unit : WorldObject {
 	// Use this for initialization
 	protected override void Start () {
 		base.Start();
-        ActionManager.AddAction(actions, "Move");
-        ActionManager.AddAction(actions, "Harvest Junk");
-        ActionManager.AddAction(actions, "Pick Up Resources");
         //Units are group selectable
         owner.selectableUnits.Add(this.gameObject);
     }

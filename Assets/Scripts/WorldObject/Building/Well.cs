@@ -11,10 +11,8 @@ public class Well : Building {
         radius.transform.Rotate(new Vector3(90, 0, 0));
         radius.transform.parent = this.transform;
         radius.transform.localScale *= radiusScale;
-        blueprintLimit = 2;
-        activeBlueprintLimit = 3;
-        ActionManager.AddAction(actions, "Construct Unit");
-        this.LoadBlueprint(BlueprintManager.BaseBlueprintDictionary["Harvester"]);
+        //ActionManager.AddAction(actions, "Construct Unit");
+        //this.LoadBlueprint(BlueprintManager.BaseBlueprintDictionary["Harvester"]);
     }
     public override void DrawSelection()
     {

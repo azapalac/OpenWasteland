@@ -102,23 +102,13 @@ public class HUD : MonoBehaviour {
                 //Change the cursor if  ANY selected object can do the thing
                 for (int i = 0; i < player.SelectedObjects.Count; i++)
                 {
-                    if (player.SelectedObjects[i].CanDo("Move") && hit.collider.gameObject.name == "Ground")
-                    {
-                        mouseCursor.sprite = moveCursor;
-                        mouseCursor.color = Color.black;
-                        break;
-                    }
+                    
 
                     //check if the object is harvestable
                     if (hit.collider.gameObject.GetComponent<HarvestableObject>() != null)
                     {
                         HarvestableObject h = hit.collider.gameObject.GetComponent<HarvestableObject>();
-                        if (player.SelectedObjects[i].CanDo("Harvest " + h.type))
-                        {
-                            mouseCursor.sprite = harvestCursor;
-                            mouseCursor.color = Color.yellow;
-                            break;
-                        }
+                        
                     }
                 }
             }

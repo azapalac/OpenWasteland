@@ -24,6 +24,6 @@ public class ConstructionButton : MonoBehaviour {
 	}
     public void StartBuild()
     {
-        parentObject.StartUnitConstruction(loadedBlueprint);
+       // parentObject.StartUnitConstruction(loadedBlueprint);
     }
 }

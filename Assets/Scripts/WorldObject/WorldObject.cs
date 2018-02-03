@@ -3,30 +3,10 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using RTS;
 
-public class Resource{
-	public string name { get; set; }
-	public int dropAmount { get; set; }
-    public Rarity rarity { get; set; }
-    public int TechLevel { get; set; }
 
 
-	public override string ToString(){
-		return "  " + dropAmount + " " + name;
-	}
 
-    public WorldObject UnPack()
-    {
-        return new WorldObject();
-    }
-}
-
-public class ConstructionProject{
-    public float timer;
-    public string currentAction;
-    public Blueprint blueprint;
-}
-
-//A world object is a unit, structure, or resource
+//A world object is a unit, structure, or resource. Any object in the world that can be selected and interacted with
 public class WorldObject : MonoBehaviour {
     public enum Size
     {
@@ -49,7 +29,7 @@ public class WorldObject : MonoBehaviour {
 
     public Size size;
 	public string objectName;
-	public Image buildImage;
+	public Image icon;
 	public Image ordersBar;
     public int techLevel;
 	public Vector3 center;
@@ -59,26 +39,9 @@ public class WorldObject : MonoBehaviour {
 	protected Vector3 scale;
     public int hitPoints;
 
-    public Vector3 source, destination;
-    public List<Blueprint> loadedBlueprints;
-    public int blueprintLimit;
-
-    //Limit to the number of active construction projects
-    public int activeBlueprintLimit = 3;
-
-    //Limit to the number of queued actions
-    public int constructionQueueLimit = 5;
-
-    public List<Resource> rebuildValue, sellValue, resourceYield, resourceInventory;
-
-    public List<Blueprint> activeBlueprints;
-    public List <float> currentActionTimers;
-    public List<string> activeActionList;
-    public List<ConstructionProject> queuedConstructionProjects;
-
 	public Player owner;
-	public List<string> actions;
-
+	private List<Action> actionQueue; //These are all the actions that the object is CURRENTLY performing
+    private Dictionary<ActionType, Action> validActions; //These are all the actions it CAN perform
 	protected bool currentlySelected = false;
 	//public List<
 	// Use this for initialization
@@ -87,8 +50,7 @@ public class WorldObject : MonoBehaviour {
         owner = GameObject.Find("Player").GetComponent<Player>();
     }
 	protected virtual void Start () {
-        actions = new List<string>();
-        resourceInventory = new List<Resource>();
+
         gameObject.layer = ResourceManager.WorldObjectLayer;
         //Retrieve tech level here
 		center = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
@@ -99,33 +61,16 @@ public class WorldObject : MonoBehaviour {
 		selectionBox.transform.localScale = scale;
 		selectionBoxRenderer = selectionBox.GetComponent<SpriteRenderer>();
 		selectionBox.transform.parent = this.transform.root;
-        loadedBlueprints = new List<Blueprint>();
 
-        
-
-        activeBlueprints = new List <Blueprint>();
-        currentActionTimers = new List <float>();
-        activeActionList = new List<string>();
-        queuedConstructionProjects = new List<ConstructionProject>();
-	}
+   	}
 
 	// Update is called once per frame
 	protected virtual void Update () {
-
-		DrawSelection();
-        
-        if (CanDo("Move") && Vector3.Distance(transform.position, destination) > moveSpeed*Time.deltaTime*2)
+        for(int i = 0; i < actionQueue.Count; i++)
         {
-            Vector3 dir = destination - source;
-            dir.Normalize();
-            transform.Translate(dir * moveSpeed * Time.deltaTime);
+            actionQueue[i].Execute(this);
         }
-
-        for(int i = 0; i < activeActionList.Count; i++)
-        {
-            this.ContinueAction(i);
-        }
-        
+        //Handle actions in action queue
     }
 
     protected float scalingFactor
@@ -151,48 +96,12 @@ public class WorldObject : MonoBehaviour {
         return new List<Resource>();
     }
     
-    public virtual void DealDamage(WorldObject otherObject)
-    {
-        //For now this is very simple. All units will have infinite range. Will add range and DPS mechanics later
- 
-        Debug.Log("Attacking");
-        otherObject.TakeDamage(attackDamage);
-    }
-
+   
 	public void SetSelection(bool selected){
 		currentlySelected = selected;
 
 	}
-    public virtual void SpawnLoot()
-    {
-
-    }
-
-    public void PickUpLoot(ResourcePack loot)
-    {
-        resourceInventory.Add(loot.containedResource);
-        Destroy(loot.gameObject);
-    }
-
-    public Resource Pack()
-    {
-        return new Resource();
-    }
-
-    public virtual void Destroy()
-    {
-        Destroy(this.gameObject);
-    }
-    //Determine whether the object can perform a specific action
-    public bool CanDo(string s)
-    {
-        return actions.Contains(s);
-    }
-
-	public List<string> GetActions(){
-		return actions;
-	}
-
+	
     ///TODO: Refactor this to work with context sensitive clicking
     ///For now, basic is just fine
 	public virtual void LeftMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller){
@@ -206,14 +115,15 @@ public class WorldObject : MonoBehaviour {
       
 	}
 
+
     public virtual void RightMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller )
     {
-
+        //Switch Default actions based on default actions
 
         if (currentlySelected && hitObject.name == "Ground")
         {
-            //Move the object, if possible
-            StartMoving(hitPoint);
+            TriggerMove(transform.position, hitPoint);
+
 
         }else if(currentlySelected && hitObject.layer == ResourceManager.WorldObjectLayer)
         {
@@ -230,25 +140,18 @@ public class WorldObject : MonoBehaviour {
             }
             if (hitObject.tag == "Resource")
             {
-                if (CanDo("Harvest " + hitObject.GetComponent<HarvestableObject>().type))
-                {
-                    DealDamage(hitObject.GetComponent<HarvestableObject>());
-                }
+                
             }
         }
     }
-    protected void StartAttacking(Vector3 enemyPoint)
+    
+    public bool CanDo(ActionType type)
     {
+        return validActions.ContainsKey(type);
+    }
 
-    }
-    protected void StartMoving(Vector3 hitPoint)
-    {
-        if (CanDo("Move"))
-        {
-            source = transform.position;
-            destination = hitPoint;
-        }
-    }
+
+   
 	private void ChangeSelection(WorldObject worldObject, Player controller){
 		SetSelection(false);
         if (controller.ObjectSelected()) {
@@ -257,4 +160,15 @@ public class WorldObject : MonoBehaviour {
 		controller.SelectedObjects.Add(worldObject);
 		worldObject.SetSelection(true);
 	}
+
+
+    public void TriggerMove(Vector3 source, Vector3 destination)
+    {
+        if (CanDo(ActionType.Move))
+        {
+            Move move = validActions[ActionType.Move] as Move;
+            move.SetUpMove(source, destination);
+            actionQueue.Add(move);
+        }
+    }
 }

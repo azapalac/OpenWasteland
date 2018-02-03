@@ -8,7 +8,7 @@ public class HarvestableObject : WorldObject {
     protected override void Start()
     {
         base.Start();
-        ActionManager.AddAction(actions, "Take Damage");
+       
     }
 
 
@@ -50,28 +50,7 @@ public class HarvestableObject : WorldObject {
         }
         return yield;
     }
-    public override void Destroy()
-    {
-        SpawnLoot();
-        base.Destroy();
-    }
-
-    public override void SpawnLoot()
-    {
-        List<Resource> loot = getDestructionYield();
-        foreach(Resource r in loot)
-        {
-            //Multiply this by some scaling factor
-            Vector3 delta = Random.insideUnitCircle * scalingFactor;
-            if (r.dropAmount > 0)
-            {
-
-                GameObject G = Instantiate(SpawnLootPack(r), this.transform.position + delta, Quaternion.identity) as GameObject;
-                G.GetComponent<ResourcePack>().CloneResource(r);
-            }
-        }
-
-    }
+  
 
     public GameObject SpawnLootPack(Resource resource)
     {

@@ -2,18 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 namespace RTS {
-    public enum Rarity
-    {
-        Junk,
-        Common,
-        Uncommon,
-        Rare,
-        Treasured,
-        Legendary,
-        Unobtanium
-    }
+
+   
 
 
+    
     public static class ResourceManager {
         
         public static int WorldObjectLayer { get { return 8; } }
@@ -83,6 +76,48 @@ namespace RTS {
     }
 
 
+    
+    public enum Rarity
+    {
+        Junk,
+        Common,
+        Uncommon,
+        Rare,
+        Treasured,
+        Legendary,
+        Unobtanium
+    }
+
+    public class Resource
+    {
+        public string name { get; set; }
+        public int dropAmount { get; set; }
+        public Rarity rarity { get; set; }
+        public int TechLevel { get; set; }
+
+        public override string ToString()
+        {
+            return "  " + dropAmount + " " + name;
+        }
+
+    }
+
+    public class Inventory
+    {
+        private List<Resource> resources;
+        private int _capacity;
+        public int Capacity { get { return _capacity; } }
+
+        public Inventory(int capacity)
+        {
+            _capacity = capacity;
+        }
+        public void AddResource(Resource resource)
+        {
+            //Calculate capacity, then if there is room for the resource, add it in
+        }
+
+    }
     public class ObjectManager
     {
 
@@ -136,6 +171,7 @@ namespace RTS {
                 };
             }
         }
+
 
         private static Resource GetResourceDrop(string resource, int dropAmount)
         {
@@ -191,16 +227,6 @@ namespace RTS {
             }
         }
 
-        public static Dictionary<string, WorldObject> BaseWorldObjects
-        {
-            get
-            {
-                return new Dictionary<string, WorldObject>
-                {
-
-                };
-            }
-        }
     }
 
 

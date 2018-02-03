@@ -19,20 +19,7 @@ public class ResourcePack : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, pickupRadius);
-
-        for(int i = 0; i < colliders.Length; i++)
-        {
-            
-            if(colliders[i].gameObject.layer == ResourceManager.WorldObjectLayer)
-            {
-                WorldObject worldObject = colliders[i].gameObject.GetComponent<WorldObject>();
-                if (worldObject.CanDo("Pick Up Resources"))
-                {
-                    worldObject.PickUpLoot(this);
-                }
-            }
-        }
+        
 	}
 
     public void PickUp(WorldObject worldObject)
