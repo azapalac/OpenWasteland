@@ -11,11 +11,8 @@ namespace RTS
         Attack,
         TakeDamage,
         Harvest,
-        ProvideResources,
-        PickUpItems,
-        GetPickedUp,
-        GetDropped,
         DropLoot,
+        PickUpItems,
         BuildUnit,
         BuildStructure,
         Repair
@@ -263,9 +260,6 @@ namespace RTS
     {
         private List<string> HarvestableObjects;
 
-       
-        
-
         private float harvestTime; //Add getters to these if we need to, currently unsure if necessary
         private float harvestTimer;
         private int harvestAmount;
@@ -281,14 +275,15 @@ namespace RTS
 
         public override void Execute(WorldObject worldObj)
         {
-            if (target.CanDo(ActionType.ProvideResources) && HarvestableObjects.Contains(target.objectName))
+            if (target.CanDo(ActionType.DropLoot) && HarvestableObjects.Contains(target.objectName))
             {
               
                 harvestTimer += Time.deltaTime;
                 if(harvestTimer >= harvestTime)
                 {
-                    //Post ProvideResources event to WorldObj
-                    //Post PickUpResources event to WorldObj
+                    //Post loot drop event for target
+                    harvestTimer = 0;
+
                 }
             }
             else
@@ -305,10 +300,44 @@ namespace RTS
         }
     }
 
-    public class ProvideResources: Action
+    public class DropLoot: Action
     {
-        public List<Resource> resourcesToProvide;
-        public override ActionType Type { get { return ActionType.ProvideResources; } }
+        public int lootDropThreshold;
+        public List<Resource> lootToDrop;
+        private int harvestDamageToTake;
+        public override ActionType Type { get { return ActionType.DropLoot; } }
+        //Doesn't matter if the loot drop is calculated when the object is created or when it is destroyed.
+        //Every object can only drop once. Stretch goal - Minor loot drops when object is losing 
+        public void SetUpDropLoot(int harvestDamage)
+        {
+            harvestDamageToTake = harvestDamage;
+            active = true;
+        }
+
+        public override void Execute(WorldObject worldObj)
+        {
+            if (active)
+            {
+                lootDropThreshold -= harvestDamageToTake;
+                if(lootDropThreshold <= 0)
+                {
+                    active = false;
+                    DropAllResources();
+                }
+            }
+
+        }
+
+        public void DropAllResources()
+        {
+            //Drop all contained resources
+        }
+
+        public DropLoot(int threshold, List<Resource> loot)
+        {
+            lootToDrop = loot;
+            lootDropThreshold = threshold;
+        }
     }
 
     public class PickUpItems: Action

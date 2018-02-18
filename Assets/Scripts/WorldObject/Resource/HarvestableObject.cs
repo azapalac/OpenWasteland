@@ -14,8 +14,8 @@ public class HarvestableObject : WorldObject {
 
 
 
-    //Get list and multiply it by size factor
-    public override List<Resource> getDestructionYield()
+    //Get list and multiply it by size factor. Do this in Actions instead
+  /*  public override List<Resource> getDestructionYield()
     {
 
         List<Resource> yield = ObjectManager.ResourceDrops[type];
@@ -49,7 +49,7 @@ public class HarvestableObject : WorldObject {
 
         }
         return yield;
-    }
+    }*/
   
 
     public GameObject SpawnLootPack(Resource resource)

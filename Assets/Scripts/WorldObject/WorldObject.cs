@@ -7,6 +7,7 @@ using RTS;
 
 
 //A world object is a unit, structure, or resource. Any object in the world that can be selected and interacted with
+//Sets up the generic WorldObject architecture
 public class WorldObject : MonoBehaviour {
     public enum Size
     {
@@ -89,13 +90,6 @@ public class WorldObject : MonoBehaviour {
 			selectionBoxRenderer.color = Color.clear;
 		}
 	}
-
-    public virtual List<Resource> getDestructionYield()
-    {
-        //The parent function just returns an empty list
-        return new List<Resource>();
-    }
-    
    
 	public void SetSelection(bool selected){
 		currentlySelected = selected;
@@ -161,7 +155,7 @@ public class WorldObject : MonoBehaviour {
 		worldObject.SetSelection(true);
 	}
 
-
+    #region event posting mini-functions
     public void TriggerMove(Vector3 source, Vector3 destination)
     {
         if (CanDo(ActionType.Move))
@@ -171,4 +165,27 @@ public class WorldObject : MonoBehaviour {
             actionQueue.Add(move);
         }
     }
+
+    public void TriggerAttack(WorldObject target)
+    {
+        if (CanDo(ActionType.Attack)){
+            Attack attack = validActions[ActionType.Attack] as Attack;
+            attack.SetUpAttack(target);
+            actionQueue.Add(attack);
+        }
+    }
+
+
+    public void TriggerTakeDamage(int damage, Attack.AttackEffect effect)
+    {
+        if (CanDo(ActionType.TakeDamage))
+        {
+            TakeDamage takeDamage = validActions[ActionType.TakeDamage] as TakeDamage;
+            takeDamage.SetUpTakeDamage(damage, effect);
+            actionQueue.Add(takeDamage);
+        }
+    }
+
+
+#endregion
 }
