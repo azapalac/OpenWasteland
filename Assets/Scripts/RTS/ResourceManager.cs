@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-namespace RTS {
+
 
    
 
@@ -75,8 +75,7 @@ namespace RTS {
         }
     }
 
-
-    
+  
     public enum Rarity
     {
         Junk,
@@ -230,4 +229,3 @@ namespace RTS {
     }
 
 
-}

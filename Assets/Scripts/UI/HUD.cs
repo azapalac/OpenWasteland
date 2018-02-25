@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using RTS;
+
 
 public class HUD : MonoBehaviour {
     public Image ordersBar;

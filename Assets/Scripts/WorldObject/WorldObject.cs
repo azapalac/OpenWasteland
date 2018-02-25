@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using RTS;
 
 
 
 
 //A world object is a unit, structure, or resource. Any object in the world that can be selected and interacted with
 //Sets up the generic WorldObject architecture
+//Handle "default" actions here
 public class WorldObject : MonoBehaviour {
     public enum Size
     {
@@ -144,7 +144,10 @@ public class WorldObject : MonoBehaviour {
         return validActions.ContainsKey(type);
     }
 
-
+    public void UnloadAction(Action action)
+    {
+        actionQueue.Remove(action);
+    }
    
 	private void ChangeSelection(WorldObject worldObject, Player controller){
 		SetSelection(false);
@@ -154,6 +157,8 @@ public class WorldObject : MonoBehaviour {
 		controller.SelectedObjects.Add(worldObject);
 		worldObject.SetSelection(true);
 	}
+
+
 
     #region event posting mini-functions
     public void TriggerMove(Vector3 source, Vector3 destination)
@@ -183,6 +188,35 @@ public class WorldObject : MonoBehaviour {
             TakeDamage takeDamage = validActions[ActionType.TakeDamage] as TakeDamage;
             takeDamage.SetUpTakeDamage(damage, effect);
             actionQueue.Add(takeDamage);
+        }
+    }
+
+    public void TriggerHarvest(WorldObject target)
+    {
+        if (CanDo(ActionType.Harvest))
+        {
+            Harvest harvest = validActions[ActionType.Harvest] as Harvest;
+            harvest.SetUpHarvest(target);
+            actionQueue.Add(harvest);
+        }
+    }
+
+    public void TriggerDropLoot(int harvestDamage)
+    {
+        if (CanDo(ActionType.DropLoot))
+        {
+            DropLoot dropLoot = validActions[ActionType.DropLoot] as DropLoot;
+            dropLoot.SetUpDropLoot(harvestDamage);
+            actionQueue.Add(dropLoot);
+        }
+    }
+    public void TriggerPickUp(Resource resourceToPickUp)
+    {
+        if (CanDo(ActionType.PickUpItems))
+        {
+            PickUpItems pickUpItems = validActions[ActionType.PickUpItems] as PickUpItems;
+            pickUpItems.SetUpPickup(resourceToPickUp);
+            actionQueue.Add(pickUpItems);
         }
     }
 

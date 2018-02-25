@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using RTS;
+
+
 using UnityEngine.UI;
 
 public class UserInput : MonoBehaviour {

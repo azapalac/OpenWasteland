@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using RTS;
+
+
 public class Well : Building {
     private GameObject radius;
     public float radiusScale;

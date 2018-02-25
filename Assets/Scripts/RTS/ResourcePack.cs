@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using RTS;
+
+
 public class ResourcePack : MonoBehaviour {
     public Resource containedResource;
     public string containedResourceName;

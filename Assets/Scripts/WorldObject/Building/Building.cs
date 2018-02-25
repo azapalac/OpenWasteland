@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using RTS;
+
 public class Building : WorldObject {
 
     public List<Resource> resourcesProduced;

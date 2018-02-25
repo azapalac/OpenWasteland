@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using RTS;
+
+
 public class Player : MonoBehaviour {
 
 	public string username;

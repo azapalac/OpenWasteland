@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using RTS;
+
+
 public class ConstructionButton : MonoBehaviour {
     public Button button;
     public Blueprint loadedBlueprint;
