@@ -87,6 +87,23 @@ using UnityEngine.UI;
         Unobtanium
     }
 
+    public enum ResourceType
+    {
+      Iron, 
+      Stone,
+      Charcoal,
+      Scrap,
+      Steel
+    }
+
+    public enum DropAmount //Multipliers. This is multiplied by the size factor of the object
+    {
+    Single,
+    Small,
+    Medium, 
+    Large
+}
+
     public class Resource
     {
         public string name { get; set; }
@@ -121,34 +138,32 @@ using UnityEngine.UI;
     {
 
         //Manages stats for in-game objects
-        private static Dictionary<string, Resource> allResources
+        private static Dictionary<ResourceType, Resource> allResources
         {
             
             get
             {
-                return new Dictionary<string, Resource>
+                return new Dictionary<ResourceType, Resource>
                 {
-                    {"Iron", new Resource { name = "Iron", rarity = Rarity.Uncommon, TechLevel = 1} },
-                    {"Stone", new Resource { name = "Stone", rarity = Rarity.Common, TechLevel = 0} },
-                    {"Charcoal", new Resource {name = "Charcoal", rarity = Rarity.Common, TechLevel = 0 } },
-                    {"Scrap", new Resource { name = "Scrap", rarity = Rarity.Junk, TechLevel = 0} },
-                    {"Food", new Resource { name = "Food", rarity = Rarity.Common, TechLevel = 0} },
-                    {"Water", new Resource { name = "Water", rarity = Rarity.Common, TechLevel = 0} },
-                    {"Steel", new Resource { name = "Steel", rarity = Rarity.Rare, TechLevel = 2} },
+                    {ResourceType.Iron, new Resource { name = "Iron", rarity = Rarity.Uncommon, TechLevel = 1} },
+                    {ResourceType.Stone, new Resource { name = "Stone", rarity = Rarity.Common, TechLevel = 0} },
+                    {ResourceType.Charcoal, new Resource {name = "Charcoal", rarity = Rarity.Common, TechLevel = 0 } },
+                    {ResourceType.Scrap, new Resource { name = "Scrap", rarity = Rarity.Junk, TechLevel = 0} },
+                    {ResourceType.Steel, new Resource { name = "Steel", rarity = Rarity.Rare, TechLevel = 2} },
                 };
             }
         }
-        public static Resource GetResource(int amount, string name)
+        public static Resource GetResource(int amount, ResourceType type)
         {
-            Resource r = GetResource(name);
+            Resource r = GetResource(type);
             r.dropAmount = amount;
             return r;
         }
-        public static Resource GetResource(string name)
+        public static Resource GetResource(ResourceType type)
         {
-            if (allResources.ContainsKey(name))
+            if (allResources.ContainsKey(type))
             {
-                return allResources[name];
+                return allResources[type];
             }
             else
             {
@@ -156,6 +171,8 @@ using UnityEngine.UI;
             }
         }
 
+
+       //Move this to a prefab level instead of a database.
         public static Dictionary<string, List<Resource>> ResourceDrops
         {
             get
@@ -163,16 +180,16 @@ using UnityEngine.UI;
                 return new Dictionary<string, List<Resource>>
                 {
                     { "Junk", new List<Resource> {
-                        GetResourceDrop("Scrap", Random.Range(20, 40)),
-                        GetResourceDrop("Stone", Random.Range(5, 30)),
-                        GetResourceDrop("Iron", Random.Range(1, 20)),
+                        GetResourceDrop(ResourceType.Scrap, Random.Range(20, 40)),
+                        GetResourceDrop(ResourceType.Steel, Random.Range(5, 30)),
+                        GetResourceDrop(ResourceType.Iron, Random.Range(1, 20)),
                     } },
                 };
             }
         }
 
 
-        private static Resource GetResourceDrop(string resource, int dropAmount)
+        private static Resource GetResourceDrop(ResourceType resource, int dropAmount)
         {
             Resource drop = new Resource();
             drop.dropAmount = 0;
@@ -218,7 +235,7 @@ using UnityEngine.UI;
 
         }
 
-        private static void GetDrop(Resource drop, string name, int dropAmount, float chance)
+        private static void GetDrop(Resource drop, ResourceType type, int dropAmount, float chance)
         {
             if (Random.Range(0f, 1f) < chance)
             {
@@ -226,6 +243,18 @@ using UnityEngine.UI;
             }
         }
 
+         
     }
+
+[System.Serializable]
+public class ResourceDrop
+{
+
+    public ResourceType type;
+    public Rarity rarity;
+    public DropAmount dropAmount;
+
+}
+
 
 

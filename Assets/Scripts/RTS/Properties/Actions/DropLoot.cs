@@ -6,15 +6,15 @@ public class DropLoot : Action
 {
     public static int ObjectDestroyed { get { return -1; } }
     public int lootDropThreshold;
-    public List<Resource> lootToDrop;
+    public List<ResourceDrop> lootToDrop;
     private int harvestDamageToTake;
     public override ActionType Type { get { return ActionType.DropLoot; } }
 
     //Get list and multiply it by size factor. Do this in Actions instead
-    public List<Resource> getDestructionYield(WorldObject worldObject)
+    public List<Resource> GetDestructionYield(WorldObject worldObject)
     {
 
-        List<Resource> yield = lootToDrop;
+        List<Resource> yield = new List<Resource>();
 
         switch (worldObject.size)
         {
@@ -85,9 +85,4 @@ public class DropLoot : Action
         //Drop all contained resources
     }
 
-    public DropLoot(int threshold, List<Resource> loot)
-    {
-        lootToDrop = loot;
-        lootDropThreshold = threshold;
-    }
 }

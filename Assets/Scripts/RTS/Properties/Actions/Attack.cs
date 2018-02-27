@@ -79,9 +79,9 @@ public class Attack : Action
             //The higher the attack speed, the faster the worldObject attacks
             if (target.CanDo(ActionType.TakeDamage) && attackTimer >= 1 / attackSpeed)
             {
-                target.hitPoints -= attackDamage;
-                //TODO: post TakeDamage event to the class
 
+                //TODO: post TakeDamage event to the class
+                target.TriggerTakeDamage(attackDamage, attackEffect);
                 //TODO: Fire projectile and do attack animation. Projectile should do damage, not the function.
                 ApplyEffect();
                 attackTimer += Time.deltaTime;

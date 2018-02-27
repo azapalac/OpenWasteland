@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProvideWater : Property{
     public int waterToProvide;
     public float radius;
-    public Sprite water;
+    public GameObject water;
 	// Use this for initialization
 	void Start () {
 		

@@ -9,7 +9,7 @@ public class ResourcePack : MonoBehaviour {
     public float pickupRadius = 5f;
 	// Use this for initialization
 	public void Initialize () {
-        containedResource = ObjectManager.GetResource(containedResourceName);
+     //   containedResource = ObjectManager.GetResource(containedResourceName);
         
 	}
 
@@ -23,7 +23,7 @@ public class ResourcePack : MonoBehaviour {
         
 	}
 
-    public void PickUp(WorldObject worldObject)
+    public void GetPickedUp(WorldObject worldObject)
     {
         //Add resources to inventory
 

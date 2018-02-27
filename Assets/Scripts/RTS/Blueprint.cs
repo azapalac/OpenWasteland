@@ -79,8 +79,8 @@ using System;
                     populationCost = 1,
                     TechLevel = 0,
                     Ingredients = new List<Resource> {
-                        ObjectManager.GetResource(10,"Scrap"),
-                        ObjectManager.GetResource(5, "Stone")
+                        ObjectManager.GetResource(10,ResourceType.Scrap),
+                        ObjectManager.GetResource(5, ResourceType.Stone)
                     },
                     ConstructionTime = 10f,
                     product = PrefabLoader.LoadUnit("Harvester"),
@@ -104,10 +104,10 @@ using System;
                     TechLevel = 0,
                     Ingredients = new List<Resource>
                     {
-                        ObjectManager.GetResource(20, "Scrap")
+                        ObjectManager.GetResource(20, ResourceType.Scrap)
                     },
                     ConstructionTime = 3f,
-                    Product = ObjectManager.GetResource(5, "Iron")
+                    Product = ObjectManager.GetResource(5, ResourceType.Stone)
 
                 } },
 
@@ -118,8 +118,8 @@ using System;
                  TechLevel = 0,
                  Ingredients = new List<Resource>
                  {
-                     ObjectManager.GetResource(50, "Stone"),
-                     ObjectManager.GetResource(20, "Scrap")
+                     ObjectManager.GetResource(50, ResourceType.Stone),
+                     ObjectManager.GetResource(20, ResourceType.Scrap)
                  },
                  ConstructionTime = 20f,
                  //product

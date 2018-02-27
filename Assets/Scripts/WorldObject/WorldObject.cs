@@ -19,15 +19,6 @@ public class WorldObject : MonoBehaviour {
         Gigantic
     }
 
-    //Stats
-    public int attackDamage;
-    public int armor { get; set; }
-    public float attackSpeed { get; set; }
-    public int healthRegenRate;
-    public int maxHitPoints;
-    public float moveSpeed;
-    public float maxRange;
-
     public Size size;
 	public string objectName;
 	public Image icon;
@@ -38,7 +29,6 @@ public class WorldObject : MonoBehaviour {
 	protected GameObject selectionBoxTemplate, selectionBox;
 	protected SpriteRenderer selectionBoxRenderer;
 	protected Vector3 scale;
-    public int hitPoints;
 
 	public Player owner;
 	private List<Action> actionQueue; //These are all the actions that the object is CURRENTLY performing
@@ -46,12 +36,17 @@ public class WorldObject : MonoBehaviour {
 	protected bool currentlySelected = false;
 	//public List<
 	// Use this for initialization
+
+    
 	protected virtual void Awake(){
         //CHANGE THIS LATER
         owner = GameObject.Find("Player").GetComponent<Player>();
     }
 	protected virtual void Start () {
-
+        if(actionQueue == null)
+        {
+            actionQueue = new List<Action>();
+        }
         gameObject.layer = ResourceManager.WorldObjectLayer;
         //Retrieve tech level here
 		center = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
