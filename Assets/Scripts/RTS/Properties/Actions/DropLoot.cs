@@ -8,54 +8,14 @@ public class DropLoot : Action
     public int lootDropThreshold;
     public List<ResourceDrop> lootToDrop;
     private int harvestDamageToTake;
+
     public override ActionType Type { get { return ActionType.DropLoot; } }
 
-    //Get list and multiply it by size factor. Do this in Actions instead
-    public List<Resource> GetDestructionYield(WorldObject worldObject)
+    
+
+    private void MultiplyAmounts(ResourcePack drop, float factor)
     {
-
-        List<Resource> yield = new List<Resource>();
-
-        switch (worldObject.size)
-        {
-            case WorldObject.Size.Tiny:
-                MultiplyAmounts(yield, 0.2f);
-                break;
-
-            case WorldObject.Size.Small:
-                MultiplyAmounts(yield, 0.6f);
-                break;
-
-            case WorldObject.Size.Medium:
-                MultiplyAmounts(yield, 1f);
-                break;
-
-            case WorldObject.Size.Large:
-                MultiplyAmounts(yield, 2.5f);
-                break;
-
-
-            case WorldObject.Size.Massive:
-                MultiplyAmounts(yield, 4f);
-                break;
-
-            case WorldObject.Size.Gigantic:
-                MultiplyAmounts(yield, 10f);
-                break;
-
-        }
-        return yield;
-    }
-
-
-
-
-    private void MultiplyAmounts(List<Resource> yield, float factor)
-    {
-        foreach (Resource resource in yield)
-        {
-            resource.dropAmount = Mathf.RoundToInt(resource.dropAmount * factor);
-        }
+       
     }
 
     //Doesn't matter if the loot drop is calculated when the object is created or when it is destroyed.
@@ -74,15 +34,54 @@ public class DropLoot : Action
             if (lootDropThreshold <= 0 || harvestDamageToTake == ObjectDestroyed)
             {
                 active = false;
-                DropAllResources();
+                DropAllResources(worldObj.size);
             }
         }
 
     }
 
-    public void DropAllResources()
+    public void DropAllResources(WorldObject.Size worldObjectSize)
     {
         //Drop all contained resources
+
+
+        List<ResourcePack> yield = new List<ResourcePack>();
+        for(int i = 0; i < lootToDrop.Count; i++) {
+
+
+            switch (worldObjectSize)
+            {
+                /*
+                case WorldObject.Size.Tiny:
+                    MultiplyAmounts(lootToDrop[i], 0.2f);
+                    break;
+
+                case WorldObject.Size.Small:
+                    MultiplyAmounts(yield, 0.6f);
+                    break;
+
+                case WorldObject.Size.Medium:
+                    MultiplyAmounts(yield, 1f);
+                    break;
+
+                case WorldObject.Size.Large:
+                    MultiplyAmounts(yield, 2.5f);
+                    break;
+
+
+                case WorldObject.Size.Massive:
+                    MultiplyAmounts(yield, 4f);
+                    break;
+
+                case WorldObject.Size.Gigantic:
+                    MultiplyAmounts(yield, 10f);
+                    break;*/
+            }
+
+        }
+
+        //Get Yield amounts from and assign them
+
     }
 
 }

@@ -69,68 +69,11 @@ using System;
             });
         }
 
-        public static Dictionary<string, Blueprint> BaseBlueprintDictionary { get
-            {
-                return new Dictionary<string, Blueprint>()
-                {
-                      //Example of a unit construction blueprint
-                {"Harvester", new UnitBlueprint {
-                    Name = "Harvester",
-                    populationCost = 1,
-                    TechLevel = 0,
-                    Ingredients = new List<Resource> {
-                        ObjectManager.GetResource(10,ResourceType.Scrap),
-                        ObjectManager.GetResource(5, ResourceType.Stone)
-                    },
-                    ConstructionTime = 10f,
-                    product = PrefabLoader.LoadUnit("Harvester"),
-
-                    DefaultActions = new List<Action>
-                    {
-                        new Move(5, Move.MoveType.Walk),
-                        new Harvest(10, 4f),
-                        new BuildStructure
-                        {
-
-                        }
-
-                    }
-
-                } },
-
-                //Example of a crafting blueprint
-                {"Iron", new CraftingBlueprint {
-                    Name = "Iron",
-                    TechLevel = 0,
-                    Ingredients = new List<Resource>
-                    {
-                        ObjectManager.GetResource(20, ResourceType.Scrap)
-                    },
-                    ConstructionTime = 3f,
-                    Product = ObjectManager.GetResource(5, ResourceType.Stone)
-
-                } },
-
-                //Example of a Building Construction blueprint
-             {"Well", new ConstructionBlueprint{
-
-                 Name = "Well",
-                 TechLevel = 0,
-                 Ingredients = new List<Resource>
-                 {
-                     ObjectManager.GetResource(50, ResourceType.Stone),
-                     ObjectManager.GetResource(20, ResourceType.Scrap)
-                 },
-                 ConstructionTime = 20f,
-                 //product
-                 product = PrefabLoader.LoadStructure("Well"),
-             }},
-
-                };
+    public static Dictionary<string, Blueprint> BaseBlueprintDictionary;
             } 
        
-    }
-    }
+    
+    
     
 
 

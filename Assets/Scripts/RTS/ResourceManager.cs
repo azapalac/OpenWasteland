@@ -110,6 +110,7 @@ using UnityEngine.UI;
         public int dropAmount { get; set; }
         public Rarity rarity { get; set; }
         public int TechLevel { get; set; }
+        public bool dropped;
 
         public override string ToString()
         {
@@ -153,94 +154,55 @@ using UnityEngine.UI;
                 };
             }
         }
-        public static Resource GetResource(int amount, ResourceType type)
-        {
-            Resource r = GetResource(type);
-            r.dropAmount = amount;
-            return r;
-        }
-        public static Resource GetResource(ResourceType type)
-        {
-            if (allResources.ContainsKey(type))
-            {
-                return allResources[type];
-            }
-            else
-            {
-                return new Resource {name = "ERROR", rarity = Rarity.Unobtanium, TechLevel = -1 };
-            }
-        }
-
-
-       //Move this to a prefab level instead of a database.
-        public static Dictionary<string, List<Resource>> ResourceDrops
-        {
-            get
-            {
-                return new Dictionary<string, List<Resource>>
-                {
-                    { "Junk", new List<Resource> {
-                        GetResourceDrop(ResourceType.Scrap, Random.Range(20, 40)),
-                        GetResourceDrop(ResourceType.Steel, Random.Range(5, 30)),
-                        GetResourceDrop(ResourceType.Iron, Random.Range(1, 20)),
-                    } },
-                };
-            }
-        }
-
-
-        private static Resource GetResourceDrop(ResourceType resource, int dropAmount)
-        {
-            Resource drop = new Resource();
-            drop.dropAmount = 0;
-            
-            if (allResources.ContainsKey(resource))
-            {
-                drop = allResources[resource];
-                Rarity rarity = drop.rarity;
+      
+    
+        public static bool GetDropChance(Rarity rarity)
+    {
+           bool b = false;
                 switch (rarity)
                 {
                     case Rarity.Junk:
-                        GetDrop(drop, resource, dropAmount, 1f);
+                        b = GetDrop(1f);
                         break;
 
                     case Rarity.Common:
-                        GetDrop(drop, resource, dropAmount, .8f);
+                        b= GetDrop(.8f);
                         break;
 
                     case Rarity.Uncommon:
-                        GetDrop(drop, resource, dropAmount, .4f);
+                        b = GetDrop(.4f);
                         break; 
 
                     case Rarity.Rare:
-                        GetDrop(drop, resource, dropAmount, .1f);
+                        b = GetDrop(.1f);
                         break;
 
                     case Rarity.Treasured:
-                        GetDrop(drop, resource, dropAmount, .02f);
+                        b = GetDrop(.02f);
                         break;
 
                     case Rarity.Legendary:
-                        GetDrop(drop, resource, dropAmount, .001f);
+                        b = GetDrop(.01f);
                         break;
 
                     case Rarity.Unobtanium:
-                        Debug.Log("Error! Trying to obtain a resource not currently in the database");
+                        Debug.Log("Error! Trying to obtain an unavailable resource ");
+                       
                         break;
 
                 }
-            }
+        return b;
+    }
 
-            return drop;
-
+        public static Resource GetResourceDrop(ResourceType type)
+        {
+        return allResources[type];
         }
 
-        private static void GetDrop(Resource drop, ResourceType type, int dropAmount, float chance)
+        private static bool GetDrop(float chance)
         {
-            if (Random.Range(0f, 1f) < chance)
-            {
-                drop.dropAmount = dropAmount;
-            }
+        return Random.Range(0f, 1f) < chance;
+          
         }
 
          
@@ -253,6 +215,43 @@ public class ResourceDrop
     public ResourceType type;
     public Rarity rarity;
     public DropAmount dropAmount;
+
+    public ResourcePack GetResourcePack()
+    {
+        
+        Resource resource = ObjectManager.GetResourceDrop(type);
+        //Load and instantiate pack
+        string name = resource.name + "Pack";
+        GameObject g = Resources.Load("ResourcePacks/" + name) as GameObject;
+        ResourcePack  pack = g.GetComponent<ResourcePack>();
+
+        if (ObjectManager.GetDropChance(rarity))
+        {
+            switch (dropAmount)
+            {
+                case DropAmount.Single:
+                    pack.containedResource.dropAmount = 1;
+                    break;
+
+                case DropAmount.Small:
+                    pack.containedResource.dropAmount = Mathf.CeilToInt(pack.containedResource.dropAmount * 0.5f);
+                    break;
+
+                case DropAmount.Medium:
+                    //Multiply by 1
+                    break;
+
+                case DropAmount.Large:
+                    pack.containedResource.dropAmount *= 2;
+                    break;
+            }
+        }
+
+
+        pack.containedResource = resource;
+
+        return pack;
+    }
 
 }
 
