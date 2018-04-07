@@ -96,7 +96,7 @@ using UnityEngine.UI;
       Steel
     }
 
-    public enum DropAmount //Multipliers. This is multiplied by the size factor of the object
+    public enum DropDensity //Multipliers. This is multiplied by the size factor of the object
     {
     Single,
     Small,
@@ -110,7 +110,6 @@ using UnityEngine.UI;
         public int dropAmount { get; set; }
         public Rarity rarity { get; set; }
         public int TechLevel { get; set; }
-        public bool dropped;
 
         public override string ToString()
         {
@@ -214,9 +213,10 @@ public class ResourceDrop
 
     public ResourceType type;
     public Rarity rarity;
-    public DropAmount dropAmount;
+    public DropDensity dropDensity;
+  
 
-    public ResourcePack GetResourcePack()
+    public ResourcePack GetResourcePack(WorldObject.Size objectSize)
     {
         
         Resource resource = ObjectManager.GetResourceDrop(type);
@@ -224,31 +224,70 @@ public class ResourceDrop
         string name = resource.name + "Pack";
         GameObject g = Resources.Load("ResourcePacks/" + name) as GameObject;
         ResourcePack  pack = g.GetComponent<ResourcePack>();
+        pack.containedResource = resource;
 
         if (ObjectManager.GetDropChance(rarity))
         {
-            switch (dropAmount)
+            pack.dropped = true;
+            //Change drip amount based on size and amount dropped;
+            switch (objectSize)
             {
-                case DropAmount.Single:
+                //Put this in a database eventually
+                case WorldObject.Size.Tiny:
+                    pack.containedResource.dropAmount = Random.Range(1, 5);
+                    break;
+
+                case WorldObject.Size.Small:
+                    pack.containedResource.dropAmount = Random.Range(1, 10);
+                    break;
+
+                case WorldObject.Size.Medium:
+                    pack.containedResource.dropAmount = Random.Range(3, 13);
+                    break;
+
+                case WorldObject.Size.Large:
+                    pack.containedResource.dropAmount = Random.Range(5, 15);
+                    break;
+
+
+                case WorldObject.Size.Massive:
+                    pack.containedResource.dropAmount = Random.Range(8, 25); 
+                    break;
+
+                case WorldObject.Size.Gigantic:
+                    pack.containedResource.dropAmount = Random.Range(15, 35);
+                    break;
+            }
+            
+
+            switch (dropDensity)
+            {
+                case DropDensity.Single:
                     pack.containedResource.dropAmount = 1;
                     break;
 
-                case DropAmount.Small:
+                case DropDensity.Small:
                     pack.containedResource.dropAmount = Mathf.CeilToInt(pack.containedResource.dropAmount * 0.5f);
                     break;
 
-                case DropAmount.Medium:
-                    //Multiply by 1
+                case DropDensity.Medium:
+                    //Multiply by 1, so do nothing
                     break;
 
-                case DropAmount.Large:
+                case DropDensity.Large:
                     pack.containedResource.dropAmount *= 2;
                     break;
             }
+            pack.containedResourceAmount = pack.containedResource.dropAmount;
+
+        }
+        else
+        {
+            pack.dropped = false;
         }
 
 
-        pack.containedResource = resource;
+
 
         return pack;
     }

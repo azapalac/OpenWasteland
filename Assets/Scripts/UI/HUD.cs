@@ -20,6 +20,8 @@ public class HUD : MonoBehaviour {
 	public Image mouseCursor;
 	public Sprite defaultCursor, moveCursor, attackCursor, selectCursor, harvestCursor;
     public GameObject imagePrefab;
+
+
 	// Use this for initialization
 	void Awake () {
 		Cursor.visible = false;
@@ -58,14 +60,14 @@ public class HUD : MonoBehaviour {
 
 	void HandleGUI(){
         //Work on this later!!!
-		string selectionName = "";
+		//string selectionName = "";
 		if(player.ObjectSelected()){
-			selectionName  = player.SelectedObjects[0].objectName;
+			nameField.text  = player.SelectedObjects[0].objectName;
 		}
 		
-		if(!selectionName.Equals("")){
+	/*	if(!selectionName.Equals("")){
 			nameField.text = selectionName;
-		}
+		}*/
 
 		DrawMouseCursor();
 	}

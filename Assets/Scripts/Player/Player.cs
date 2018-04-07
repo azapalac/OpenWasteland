@@ -13,7 +13,7 @@ public class Player : MonoBehaviour {
     public int knowledgeLimit;
     public List<GameObject> selectableUnits;
 
-    public List<WorldObject> SelectedObjects { get; set; }
+    public List<WorldObject> SelectedObjects;
 
 
 

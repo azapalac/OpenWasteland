@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DropLoot : Action
 {
+    public float dropRadius;
+
+    public bool TestLootDrop;
     public static int ObjectDestroyed { get { return -1; } }
     public int lootDropThreshold;
     public List<ResourceDrop> lootToDrop;
@@ -11,7 +14,14 @@ public class DropLoot : Action
 
     public override ActionType Type { get { return ActionType.DropLoot; } }
 
-    
+    void Update()
+    {
+        if (TestLootDrop)
+        {
+            DropAllResources(WorldObject.Size.Medium);
+            TestLootDrop = false;
+        }
+    }
 
     private void MultiplyAmounts(ResourcePack drop, float factor)
     {
@@ -43,45 +53,31 @@ public class DropLoot : Action
     public void DropAllResources(WorldObject.Size worldObjectSize)
     {
         //Drop all contained resources
+        for (int i = 0; i < lootToDrop.Count; i++)
+        {
+            //Note prefabs are loaded by GetResourcePack
 
-
-        List<ResourcePack> yield = new List<ResourcePack>();
-        for(int i = 0; i < lootToDrop.Count; i++) {
-
-
-            switch (worldObjectSize)
+            ResourcePack pack = lootToDrop[i].GetResourcePack(worldObjectSize);
+            //Don't instantiate the pack if it didn't drop
+            if (pack.dropped)
             {
-                /*
-                case WorldObject.Size.Tiny:
-                    MultiplyAmounts(lootToDrop[i], 0.2f);
-                    break;
+              
 
-                case WorldObject.Size.Small:
-                    MultiplyAmounts(yield, 0.6f);
-                    break;
+                Vector3 positionToSpawn = transform.position + RandomPointInCicle(dropRadius);
 
-                case WorldObject.Size.Medium:
-                    MultiplyAmounts(yield, 1f);
-                    break;
-
-                case WorldObject.Size.Large:
-                    MultiplyAmounts(yield, 2.5f);
-                    break;
-
-
-                case WorldObject.Size.Massive:
-                    MultiplyAmounts(yield, 4f);
-                    break;
-
-                case WorldObject.Size.Gigantic:
-                    MultiplyAmounts(yield, 10f);
-                    break;*/
+                GameObject g = Instantiate(pack.gameObject, positionToSpawn , Quaternion.identity);
             }
-
         }
-
-        //Get Yield amounts from and assign them
 
     }
 
+
+    private Vector3 RandomPointInCicle(float radius)
+    {
+        var angle = Random.Range(0f, 1f) * Mathf.PI * 2;
+        radius = Mathf.Sqrt(Random.Range(0f, 1f)) * radius;
+        var x =  radius * Mathf.Cos(angle);
+        var y =  radius * Mathf.Sin(angle);
+        return new Vector3(x, 0, y);
+    }
 }

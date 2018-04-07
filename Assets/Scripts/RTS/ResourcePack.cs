@@ -7,21 +7,13 @@ public class ResourcePack : MonoBehaviour {
     public string containedResourceName;
     public int containedResourceAmount;
     public float pickupRadius = 5f;
+    public bool dropped;
 	// Use this for initialization
 	public void Initialize () {
      //   containedResource = ObjectManager.GetResource(containedResourceName);
         
 	}
-
-
-    public void CloneResource(Resource r) {
-        containedResource = r;
-        containedResourceAmount = r.dropAmount;
-    }
-	// Update is called once per frame
-	void Update () {
-        
-	}
+	
 
     public void GetPickedUp(WorldObject worldObject)
     {

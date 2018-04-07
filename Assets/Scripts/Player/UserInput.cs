@@ -130,9 +130,10 @@ public class UserInput : MonoBehaviour {
                 else if (hitObject.name != "Ground")
                 {
                     WorldObject worldObject = hitObject.GetComponent<WorldObject>();
-
+                    //NOTE: Add shift click eventually
                     if (worldObject)
                     {
+                        player.SelectedObjects.Clear();
                         player.SelectedObjects.Add(worldObject);
                         worldObject.SetSelection(true);
                         player.SelectedObjects.Add(worldObject);
