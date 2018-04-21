@@ -61,6 +61,10 @@
 -r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll"
 -r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll"
 -r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll"
+-r:C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll
+-r:C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll
+-r:C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/UnityEngine.Purchasing.dll
+-r:C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll
 -define:UNITY_5_3_OR_NEWER
 -define:UNITY_5_4_OR_NEWER
 -define:UNITY_5_5_OR_NEWER
@@ -156,9 +160,34 @@
 -define:ENABLE_NATIVE_ARRAY_CHECKS
 -define:UNITY_TEAM_LICENSE
 -define:ENABLE_VSTU
+Assets/Scripts/GameManager.cs
+Assets/Scripts/ImgPrefab.cs
 Assets/Scripts/Player/Player.cs
 Assets/Scripts/Player/UserInput.cs
+Assets/Scripts/RTS/Blueprint.cs
+Assets/Scripts/RTS/Properties/Actions/Action.cs
+Assets/Scripts/RTS/Properties/Actions/Attack.cs
+Assets/Scripts/RTS/Properties/Actions/BuildStructure.cs
+Assets/Scripts/RTS/Properties/Actions/BuildUnit.cs
+Assets/Scripts/RTS/Properties/Actions/DropLoot.cs
+Assets/Scripts/RTS/Properties/Actions/Harvest.cs
+Assets/Scripts/RTS/Properties/Actions/Move.cs
+Assets/Scripts/RTS/Properties/Actions/PickUpItems.cs
+Assets/Scripts/RTS/Properties/Actions/Repair.cs
+Assets/Scripts/RTS/Properties/Actions/TakeDamage.cs
+Assets/Scripts/RTS/Properties/Property.cs
+Assets/Scripts/RTS/Properties/ProvideFood.cs
+Assets/Scripts/RTS/Properties/ProvideShelter.cs
+Assets/Scripts/RTS/Properties/ProvideWater.cs
 Assets/Scripts/RTS/ResourceManager.cs
+Assets/Scripts/RTS/ResourcePack.cs
+Assets/Scripts/UI/ConstructionButton.cs
+Assets/Scripts/UI/HUD.cs
+Assets/Scripts/WorldObject/Building/Building.cs
+Assets/Scripts/WorldObject/Building/Well.cs
+Assets/Scripts/WorldObject/Resource/HarvestableObject.cs
+Assets/Scripts/WorldObject/Unit/Unit.cs
+Assets/Scripts/WorldObject/WorldObject.cs
 -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Runtime.Serialization.dll"
 -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.Linq.dll"
 -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\UnityScript.dll"
