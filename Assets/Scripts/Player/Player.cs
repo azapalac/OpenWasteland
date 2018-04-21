@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
 
 
 
-    public enum status
+    public enum Status
     {
         NotFound,
         Neutral,
@@ -25,14 +25,14 @@ public class Player : MonoBehaviour {
         Enemy
 
     };
-    public Dictionary<string, status> knownPlayers;
+    public Dictionary<string, Status> knownPlayers;
     public void AddKnownPlayer(string playername)
     {
         //All players start out as neutral to each other
-        knownPlayers.Add(playername, status.Neutral);
+        knownPlayers.Add(playername, Status.Neutral);
     }
 
-    public status GetStatus(string playername)
+    public Status GetStatus(string playername)
     {
         if (knownPlayers.ContainsKey(playername))
         {
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour {
         //selectableUnits = new List<GameObject>();
     }
 	void Start () {
-        knownPlayers = new Dictionary<string, status>();
+        knownPlayers = new Dictionary<string, Status>();
         
 		hud = GetComponentInChildren<HUD>();
 	}
