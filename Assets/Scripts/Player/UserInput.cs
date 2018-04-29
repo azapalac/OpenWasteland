@@ -23,8 +23,8 @@ public class UserInput : MonoBehaviour {
 
 			if(Input.GetMouseButton(0)){
 				//Select units
-				RaycastHit hit;
-				Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+				//RaycastHit hit;
+				//Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
 			}
 		}
@@ -116,7 +116,7 @@ public class UserInput : MonoBehaviour {
 
 		if(player.hud.MouseInBounds()){
 
-			Debug.Log ("Click!");
+			//Debug.Log ("Click!");
 			GameObject hitObject = FindHitObject();
 			Vector3 hitPoint = FindHitPoint();
 
@@ -136,7 +136,7 @@ public class UserInput : MonoBehaviour {
                         player.SelectedObjects.Clear();
                         player.SelectedObjects.Add(worldObject);
                         worldObject.SetSelection(true);
-                        player.SelectedObjects.Add(worldObject);
+                        //player.SelectedObjects.Add(worldObject);
                     }
 
                 }
@@ -181,7 +181,7 @@ public class UserInput : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast (ray, out hit)){ 
-			Debug.Log ("Hit " + hit.collider.transform.root.gameObject.name);
+			//Debug.Log ("Hit " + hit.collider.transform.root.gameObject.name);
 			return hit.collider.transform.root.gameObject;
 
 		}

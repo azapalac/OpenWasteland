@@ -18,18 +18,24 @@ public class Attack : Action
     {
         Normal, Burning, Cold, Acid, Laser, Electric, Pierce
     }
-    private int attackDamage;
-    public int AttackDamage { get { return attackDamage; } }
-    private float attackSpeed;
+
+    public int attackDamage;
+    public float attackSpeed;
+
+
+
     private float attackTimer;
-    public float AttackSpeed { get { return attackSpeed; } }
-    private Range attackRange;
-    private AttackEffect attackEffect;
+
+    [SerializeField]
+    public Range attackRange;
+
+    [SerializeField]
+    public AttackEffect attackEffect;
 
     //Change to projectile based eventually
     private WorldObject target;
 
-    public float AttackRange
+    private float AttackRangeVal
     {
         get
         {
@@ -49,22 +55,41 @@ public class Attack : Action
         }
     }
 
-    public Attack(int damage, float speed, Range range, AttackEffect effect)
+    
+
+
+    public override void SetUpRightClick(Vector3 hitPoint, GameObject clickedObject)
     {
-        attackDamage = damage;
-        attackSpeed = speed;
+        //If there is a target within range, attack it, otherwise queue up the attack
+        WorldObject target = clickedObject.GetComponent<WorldObject>();
+        float dist = Vector3.Distance(transform.position, hitPoint);
+        if (target != null)
+        {
+            attackTimer = 0;
+            this.target = target;
+            active = true;
+            if(dist < AttackRangeVal)
+            {
+                //Queue up an attack
+                worldObject.QueueAction(this);
 
-        attackEffect = effect;
-        attackRange = range;
+                //SetUp a move action
+                if (worldObject.CanDo(ActionType.Move))
+                {
+                    worldObject.GetComponent<Move>().SetUpRightClick(hitPoint, clickedObject);
+                }
+            }
+            else
+            {
 
-    }
+            }
+        }
+        else
+        {
+            
+        }
 
-
-    public void SetUpAttack(WorldObject target)
-    {
-        attackTimer = 0;
-        this.target = target;
-        active = true;
+      
     }
     public override void Execute(WorldObject worldObj)
     {
@@ -81,7 +106,7 @@ public class Attack : Action
             {
 
                 //TODO: post TakeDamage event to the class
-                target.TriggerTakeDamage(attackDamage, attackEffect);
+                //target.TriggerTakeDamage(attackDamage, attackEffect);
                 //TODO: Fire projectile and do attack animation. Projectile should do damage, not the function.
                 ApplyEffect();
                 attackTimer += Time.deltaTime;

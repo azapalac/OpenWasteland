@@ -12,42 +12,45 @@ public class Move : Action
     }
 
     public float moveSpeed;
+
+    [SerializeField]
     public MoveType moveType;
     Vector3 source, dest;
-    public Move(float speed, MoveType type)
-    {
-        moveSpeed = speed;
-        moveType = type;
-    }
+   
     public override ActionType Type { get { return ActionType.Move; } }
-
-
-    public float MoveSpeed { get { return moveSpeed; } }
 
     public override void Execute(WorldObject worldObj)
     {
+        
         if (active)
         {
             //Move in a straight line for now
             Vector3 delta = dest - source;
             delta.Normalize();
-            worldObj.transform.Translate(delta * moveSpeed * Time.deltaTime);
+            transform.Translate(delta * moveSpeed * Time.deltaTime);
 
-            if (Vector3.Magnitude(worldObj.transform.position - dest) < 1)
+            if (Vector3.Magnitude(transform.position - dest) < 2*moveSpeed*Time.deltaTime)
             {
                 active = false;
+                worldObject.UnloadAction(this);
             }
 
         }
     }
 
-    public void SetUpMove(Vector3 source, Vector3 destination)
+    //Add queue system later
+    public override void SetUpRightClick(Vector3 destination, GameObject clickedObject)
     {
+        //Make sure to unload this from the queue so I don't stack up multiples of the same command
+        if (worldObject.IsDoing(this))
+        {
+            worldObject.UnloadAction(this);
+        }
 
-        this.source = source;
-        this.dest = destination;
+        source = transform.position;
+        dest = destination;
         active = true;
-
+        worldObject.LoadAction(this);
 
     }
 

@@ -17,7 +17,7 @@ using UnityEngine.UI;
         private static GameObject selectionBox;
         private static GameObject radius;
         public static GameObject GetRadius { get { return radius; } }
-        public static GameObject GetSelectionBox { get { return selectionBox; } }
+        public static GameObject SelectionBox { get { return selectionBox; } }
         public static void StoreSelectionBoxItems(GameObject s) {
             selectionBox = s;
         }
@@ -32,6 +32,13 @@ using UnityEngine.UI;
         public static float RotateAmount { get { return 10; } }
         private static Vector3 invalidPosition = new Vector3(-99999, -99999, -99999);
         public static Vector3 InvalidPosition { get { return invalidPosition; } }
+
+
+        
+        public static int GetEnumLength(System.Type type)
+        {
+            return System.Enum.GetValues(type).Length;
+        }
 
         static Texture2D whiteTexture;
         public static Texture2D WhiteTexture
@@ -65,6 +72,7 @@ using UnityEngine.UI;
             // Create Rect
             return Rect.MinMaxRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
         }
+        
 
         public static Color selectionColor
         {

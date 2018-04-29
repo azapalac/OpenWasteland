@@ -259,7 +259,6 @@
     <Compile Include="Assets\Scripts\UI\ConstructionButton.cs" />
     <Compile Include="Assets\Scripts\UI\HUD.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Building\Building.cs" />
-    <Compile Include="Assets\Scripts\WorldObject\Building\Well.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Resource\HarvestableObject.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Unit\Unit.cs" />
     <Compile Include="Assets\Scripts\WorldObject\WorldObject.cs" />

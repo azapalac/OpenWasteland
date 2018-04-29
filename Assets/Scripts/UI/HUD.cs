@@ -34,10 +34,6 @@ public class HUD : MonoBehaviour {
 		ResourceManager.StoreSelectionBoxItems(selectionBox);
         ResourceManager.StoreRadiusItems(radius);
 
-       
-   
-        //multiSelect.SetActive(false);
-
     }
 	
 	// Update is called once per frame
@@ -63,12 +59,12 @@ public class HUD : MonoBehaviour {
 		//string selectionName = "";
 		if(player.ObjectSelected()){
 			nameField.text  = player.SelectedObjects[0].objectName;
-		}
-		
-	/*	if(!selectionName.Equals("")){
-			nameField.text = selectionName;
-		}*/
-
+        }
+        else
+        {
+            nameField.text = "";
+        }
+	
 		DrawMouseCursor();
 	}
 
@@ -81,11 +77,33 @@ public class HUD : MonoBehaviour {
         //standard behavior
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.gameObject.layer == ResourceManager.WorldObjectLayer)
+            if (hit.collider.gameObject.GetComponent<WorldObject>() != null)
             {
                 //Should be red for enemies (At War), green for allies, and yellow for neutral
                 mouseCursor.sprite = selectCursor;
                 mouseCursor.color = Color.green;
+
+                //If an object is selected, override cursor
+                if (player.ObjectSelected())
+                {
+
+                  
+                 //Change the cursor if  ANY selected object can do the thing
+                 
+                    for (int i = 0; i < player.SelectedObjects.Count; i++)
+                    {
+                       if (player.SelectedObjects[i].CanDo(ActionType.Harvest))
+                        {
+
+                        }
+
+                        
+                     }
+                    
+                }
+
+
+
             } else {
                 mouseCursor.sprite = defaultCursor;
                 mouseCursor.color = Color.black;
@@ -97,24 +115,7 @@ public class HUD : MonoBehaviour {
             mouseCursor.color = Color.black;
         }
 
-        //If an object is selected, override cursor
-        if (player.ObjectSelected()){
-
-            if(Physics.Raycast(ray, out hit)){
-                //Change the cursor if  ANY selected object can do the thing
-                for (int i = 0; i < player.SelectedObjects.Count; i++)
-                {
-                    
-
-                    //check if the object is harvestable
-                    if (hit.collider.gameObject.GetComponent<HarvestableObject>() != null)
-                    {
-                        HarvestableObject h = hit.collider.gameObject.GetComponent<HarvestableObject>();
-                        
-                    }
-                }
-            }
-		}
+       
 	}
 
     public void StartMultiSelect(Vector3 origin)
@@ -166,7 +167,7 @@ public class HUD : MonoBehaviour {
             if (rect.Contains(screenPos))
             {
                     //Debug.Log(multiSelectImage.rectTransform.rect.width);
-                    player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(true);
+                   // player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(true);
             }else
             {
                 //Deselect - fix this logic

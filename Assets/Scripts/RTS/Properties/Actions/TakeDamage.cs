@@ -43,7 +43,7 @@ public class TakeDamage : Action
                     break;
             }
             //-1 counts as a critical success so it can bypass the harvest threshold
-            worldObj.TriggerDropLoot(DropLoot.ObjectDestroyed);
+            //worldObj.TriggerDropLoot(DropLoot.ObjectDestroyed);
 
             Stop();
         }

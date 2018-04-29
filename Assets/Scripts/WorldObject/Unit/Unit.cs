@@ -5,10 +5,7 @@ using UnityEngine.UI;
 public class Unit : WorldObject {
     public int populationCost;
     public string unitType { get; set; }
-	protected override void Awake(){
-
-		base.Awake();
-	}
+	
 	// Use this for initialization
 	protected override void Start () {
 		base.Start();

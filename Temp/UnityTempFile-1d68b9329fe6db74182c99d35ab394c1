@@ -184,7 +184,6 @@ Assets/Scripts/RTS/ResourcePack.cs
 Assets/Scripts/UI/ConstructionButton.cs
 Assets/Scripts/UI/HUD.cs
 Assets/Scripts/WorldObject/Building/Building.cs
-Assets/Scripts/WorldObject/Building/Well.cs
 Assets/Scripts/WorldObject/Resource/HarvestableObject.cs
 Assets/Scripts/WorldObject/Unit/Unit.cs
 Assets/Scripts/WorldObject/WorldObject.cs

@@ -4,44 +4,57 @@ using UnityEngine;
 
 public class Harvest : Action
 {
-    private List<string> HarvestableObjects;
 
-    private float harvestTime; //Add getters to these if we need to, currently unsure if necessary
+    public float harvestTime;
     private float harvestTimer;
-    private int harvestAmount;
-    private WorldObject target;
+    public int harvestAmount;
+    private DropLoot targetDropLoot;
     public override ActionType Type { get { return ActionType.Harvest; } }
     //There's only one harvest range, melee.
 
-    public void SetUpHarvest(WorldObject harvestTarget)
+    public override void SetUpRightClick(Vector3 hitPoint, GameObject clickedObject)
     {
-        harvestTimer = 0;
-        target = harvestTarget;
+        WorldObject harvestTarget = clickedObject.GetComponent<WorldObject>();
+        if (harvestTarget != null)
+        {
+
+            //TODO: Check range and queue movement if out of range
+
+            if (!worldObject.IsDoing(this) && harvestTarget.CanDo(ActionType.DropLoot))
+            {
+                harvestTimer = 0;
+                targetDropLoot = harvestTarget.GetComponent<DropLoot>();
+                worldObject.LoadAction(this);
+                active = true;
+            }
+            else
+            {
+
+            }
+        }
     }
 
     public override void Execute(WorldObject worldObj)
     {
-        if (target.CanDo(ActionType.DropLoot) && HarvestableObjects.Contains(target.objectName))
+       //Loot is only dropped when things die
+      //If target still exists, keep going. Otherwise stop.
+      if(targetDropLoot == null)
         {
-
-            harvestTimer += Time.deltaTime;
-            if (harvestTimer >= harvestTime)
-            {
-                //Post loot drop event for target
-                harvestTimer = 0;
-
-            }
-        }
-        else
-        {
-            //Post error message
+            active = false;
+            worldObject.UnloadAction(this);
+            return;
         }
 
+      harvestTimer += Time.deltaTime;
+      if (harvestTimer >= harvestTime)
+      {
+            targetDropLoot.SetUpDropLoot(harvestAmount);
+            harvestTimer = 0;
+
+           
+      }
+        
     }
 
-    public Harvest(int harvestAmount, float harvestTime)
-    {
-        this.harvestAmount = harvestAmount;
-        this.harvestTime = harvestTime;
-    }
+   
 }

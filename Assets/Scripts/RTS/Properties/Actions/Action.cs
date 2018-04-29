@@ -22,26 +22,36 @@ using UnityEngine;
         Unarmored
     }
 
-    public class Action : Property
-        {
+public class Action : Property
+{ 
 
-            protected bool active;
-            public bool Active { get { return active; } }
-            public virtual ActionType Type { get { return ActionType.Default; } }
-            public virtual void Execute(WorldObject worldObj)
-            {
-            if (!active)
-            {
-                return;
-            }
 
-            }
+   protected bool active;
+
+   public bool Active { get { return active; } }
+   public virtual ActionType Type { get { return ActionType.Default; } }
             
-           
 
-            public void Stop()
-            {
-                active = false;
-            }
+   public virtual void SetUpRightClick(Vector3 hitPoint, GameObject clickedObject)
+   {
 
-        }
+   }
+   
+
+   public virtual void Execute(WorldObject worldObj)
+   {
+      if (!active)
+       {
+           return;
+       }
+
+   }
+            
+            
+
+    public void Stop()
+    {
+      active = false;
+    }
+
+}

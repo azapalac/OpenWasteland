@@ -29,44 +29,57 @@ public class WorldObject : MonoBehaviour {
 	protected GameObject selectionBoxTemplate, selectionBox;
 	protected SpriteRenderer selectionBoxRenderer;
 	protected Vector3 scale;
-
 	public Player owner;
-	private List<Action> actionQueue; //These are all the actions that the object is CURRENTLY performing
+	private List<Action> currentActions; //These are all the actions that the object is CURRENTLY performing
+    private List<Action> queuedActions; //These are all the actions that it WILL perform but currently can't
     private Dictionary<ActionType, Action> validActions; //These are all the actions it CAN perform
-	protected bool currentlySelected = false;
-	//public List<
-	// Use this for initialization
+    
+    protected bool currentlySelected = false;
+    public bool Selected { get { return currentlySelected;  } }
 
     
-	protected virtual void Awake(){
-        //CHANGE THIS LATER
+    
+	protected virtual void Start(){
+        validActions = new Dictionary<ActionType, Action>();
         owner = GameObject.Find("Player").GetComponent<Player>();
-    }
-	protected virtual void Start () {
-        if(actionQueue == null)
+        Action[] allActions = GetComponents<Action>();
+        for(int i = 0; i < allActions.Length; i++)
         {
-            actionQueue = new List<Action>();
+            validActions.Add(allActions[i].Type, allActions[i]);
+        }
+  
+        if(currentActions == null)
+        {
+            currentActions = new List<Action>();
+        }
+
+        if(queuedActions == null)
+        {
+            queuedActions = new List<Action>();
         }
         gameObject.layer = ResourceManager.WorldObjectLayer;
-        //Retrieve tech level here
-		center = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
-		selectionBoxTemplate = ResourceManager.GetSelectionBox;
+       
+		center = this.transform.position;
+		selectionBoxTemplate = ResourceManager.SelectionBox;
 		selectionBox = GameObject.Instantiate(selectionBoxTemplate, center, Quaternion.identity) as GameObject;
 		selectionBox.transform.Rotate(new Vector3(90, 0, 0));
-		scale = this.gameObject.GetComponent<Collider>().bounds.size;
+		scale = GetFootprint(this.gameObject.GetComponent<Collider>().bounds.size)*2;
 		selectionBox.transform.localScale = scale;
 		selectionBoxRenderer = selectionBox.GetComponent<SpriteRenderer>();
-		selectionBox.transform.parent = this.transform.root;
+		selectionBox.transform.parent = this.transform;
 
    	}
 
 	// Update is called once per frame
 	protected virtual void Update () {
-        for(int i = 0; i < actionQueue.Count; i++)
+
+        DrawSelection();
+
+        for(int i = 0; i < currentActions.Count; i++)
         {
-            actionQueue[i].Execute(this);
+            currentActions[i].Execute(this);
         }
-        //Handle actions in action queue
+        
     }
 
     protected float scalingFactor
@@ -77,6 +90,7 @@ public class WorldObject : MonoBehaviour {
         }
     }
 
+    //What the object draws when it is selected
     public virtual void DrawSelection(){
 		if(currentlySelected){
 			//TODO: Change this to be red for enemies and green for allies
@@ -89,10 +103,9 @@ public class WorldObject : MonoBehaviour {
 	public void SetSelection(bool selected){
 		currentlySelected = selected;
 
+     
 	}
 	
-    ///TODO: Refactor this to work with context sensitive clicking
-    ///For now, basic is just fine
 	public virtual void LeftMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller){
         //Only handle input if currently selected
         if (currentlySelected && hitObject.name != "Ground")
@@ -103,45 +116,57 @@ public class WorldObject : MonoBehaviour {
         }
       
 	}
-
-
-    public virtual void RightMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller )
+    
+    public void QueueAction(Action action)
     {
-        //Switch Default actions based on default actions
+        //Add an action to the queue
+        queuedActions.Insert(0, action);
+    }
 
-        if (currentlySelected && hitObject.name == "Ground")
+    public void DequeueAction()
+    {
+        if (queuedActions.Count > 0) {
+            //Remove an action from the queue and add it to the pool of current actions
+            Action action = queuedActions[0];
+            queuedActions.Remove(action);
+            currentActions.Add(action);
+        }
+        else
         {
-            TriggerMove(transform.position, hitPoint);
-
-
-        }else if(currentlySelected && hitObject.layer == ResourceManager.WorldObjectLayer)
-        {
-            WorldObject worldObject = hitObject.GetComponent<WorldObject>();
-            //if the object is owned by someone
-            if(worldObject.owner != null)
-            {
-                //Determine action based on allegiance
-                if(worldObject.owner == controller)
-                {
-                    //Move to the friendly unit or building
-                    //If carrying resources, drop them off
-                }
-            }
-            if (hitObject.tag == "Resource")
-            {
-                
-            }
+            Debug.LogError("ERROR: Action Queue is empty!");
         }
     }
+
+    public void RightMouseClick(GameObject hitObject, Vector3 hitPoint, Player controller )
+    {
+            //For every action, set up its right click if it's valid
+            for(int i = 0; i < ResourceManager.GetEnumLength(typeof(ActionType)); i++)
+            {
+                if (CanDo((ActionType)i)){
+                    validActions[(ActionType)i].SetUpRightClick(hitPoint, hitObject);
+                }
+            }
+        
+    }
     
+    public bool IsDoing(Action action)
+    {
+        return currentActions.Contains(action);
+    }
+
     public bool CanDo(ActionType type)
     {
         return validActions.ContainsKey(type);
     }
 
+    public void LoadAction(Action action)
+    {
+        currentActions.Add(action);
+    }
+
     public void UnloadAction(Action action)
     {
-        actionQueue.Remove(action);
+        currentActions.Remove(action);
     }
    
 	private void ChangeSelection(WorldObject worldObject, Player controller){
@@ -153,68 +178,10 @@ public class WorldObject : MonoBehaviour {
 		worldObject.SetSelection(true);
 	}
 
-
-
-    #region event posting mini-functions
-    public void TriggerMove(Vector3 source, Vector3 destination)
+    Vector3 GetFootprint(Vector3 scale)
     {
-        if (CanDo(ActionType.Move))
-        {
-            Move move = validActions[ActionType.Move] as Move;
-            move.SetUpMove(source, destination);
-            actionQueue.Add(move);
-        }
+        return new Vector3(scale.x, scale.z, 1);
     }
 
-    public void TriggerAttack(WorldObject target)
-    {
-        if (CanDo(ActionType.Attack)){
-            Attack attack = validActions[ActionType.Attack] as Attack;
-            attack.SetUpAttack(target);
-            actionQueue.Add(attack);
-        }
-    }
-
-
-    public void TriggerTakeDamage(int damage, Attack.AttackEffect effect)
-    {
-        if (CanDo(ActionType.TakeDamage))
-        {
-            TakeDamage takeDamage = validActions[ActionType.TakeDamage] as TakeDamage;
-            takeDamage.SetUpTakeDamage(damage, effect);
-            actionQueue.Add(takeDamage);
-        }
-    }
-
-    public void TriggerHarvest(WorldObject target)
-    {
-        if (CanDo(ActionType.Harvest))
-        {
-            Harvest harvest = validActions[ActionType.Harvest] as Harvest;
-            harvest.SetUpHarvest(target);
-            actionQueue.Add(harvest);
-        }
-    }
-
-    public void TriggerDropLoot(int harvestDamage)
-    {
-        if (CanDo(ActionType.DropLoot))
-        {
-            DropLoot dropLoot = validActions[ActionType.DropLoot] as DropLoot;
-            dropLoot.SetUpDropLoot(harvestDamage);
-            actionQueue.Add(dropLoot);
-        }
-    }
-    public void TriggerPickUp(Resource resourceToPickUp)
-    {
-        if (CanDo(ActionType.PickUpItems))
-        {
-            PickUpItems pickUpItems = validActions[ActionType.PickUpItems] as PickUpItems;
-            pickUpItems.SetUpPickup(resourceToPickUp);
-            actionQueue.Add(pickUpItems);
-        }
-    }
-
-
-#endregion
+   
 }

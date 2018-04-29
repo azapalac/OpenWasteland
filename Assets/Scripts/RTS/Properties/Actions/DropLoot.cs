@@ -12,6 +12,7 @@ public class DropLoot : Action
     public List<ResourceDrop> lootToDrop;
     private int harvestDamageToTake;
 
+
     public override ActionType Type { get { return ActionType.DropLoot; } }
 
     void Update()
@@ -30,10 +31,15 @@ public class DropLoot : Action
 
     //Doesn't matter if the loot drop is calculated when the object is created or when it is destroyed.
     //Every object can only drop once. Stretch goal - Minor loot drops when object is losing 
+    //This doesn't overload SetUpRightClick
     public void SetUpDropLoot(int harvestDamage)
     {
-        harvestDamageToTake = harvestDamage;
-        active = true;
+        if (!worldObject.IsDoing(this))
+        {
+            harvestDamageToTake = harvestDamage;
+            active = true;
+
+        }
     }
 
     public override void Execute(WorldObject worldObj)
@@ -41,11 +47,13 @@ public class DropLoot : Action
         if (active)
         {
             lootDropThreshold -= harvestDamageToTake;
+           
             if (lootDropThreshold <= 0 || harvestDamageToTake == ObjectDestroyed)
             {
                 active = false;
                 DropAllResources(worldObj.size);
             }
+            worldObject.UnloadAction(this);
         }
 
     }
