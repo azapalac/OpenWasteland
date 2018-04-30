@@ -73,7 +73,7 @@
 -define:UNITY_2017_2_OR_NEWER
 -define:UNITY_2017_3_OR_NEWER
 -define:UNITY_2017_4_OR_NEWER
--define:UNITY_2017_4_0
+-define:UNITY_2017_4_1
 -define:UNITY_2017_4
 -define:UNITY_2017
 -define:ENABLE_AUDIO
