@@ -72,7 +72,7 @@ public class WorldObject : MonoBehaviour {
 
 	// Update is called once per frame
 	protected virtual void Update () {
-
+        
         DrawSelection();
 
         for(int i = 0; i < currentActions.Count; i++)
@@ -102,7 +102,14 @@ public class WorldObject : MonoBehaviour {
    
 	public void SetSelection(bool selected){
 		currentlySelected = selected;
-
+        if (selected)
+        {
+            owner.SelectedObjects.Add(this);
+        }
+        else
+        {
+            owner.SelectedObjects.Remove(this);
+        }
      
 	}
 	
@@ -149,6 +156,23 @@ public class WorldObject : MonoBehaviour {
         
     }
     
+
+    public void StopDoing(ActionType actionType)
+    {
+        if (IsDoing(validActions[actionType]))
+        {
+            StopDoing(validActions[actionType]);
+        }
+    }
+
+    public void StartDoing(ActionType actionType)
+    {
+        if (CanDo(actionType))
+        {
+            StartDoing(validActions[actionType]);
+        }
+    }
+
     public bool IsDoing(Action action)
     {
         return currentActions.Contains(action);
@@ -159,12 +183,12 @@ public class WorldObject : MonoBehaviour {
         return validActions.ContainsKey(type);
     }
 
-    public void LoadAction(Action action)
+    public void StartDoing(Action action)
     {
         currentActions.Add(action);
     }
 
-    public void UnloadAction(Action action)
+    public void StopDoing(Action action)
     {
         currentActions.Remove(action);
     }

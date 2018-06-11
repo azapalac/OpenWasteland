@@ -239,16 +239,16 @@
     <Compile Include="Assets\Scripts\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Player\UserInput.cs" />
     <Compile Include="Assets\Scripts\RTS\Blueprint.cs" />
+    <Compile Include="Assets\Scripts\RTS\Projectile.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\Action.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\Attack.cs" />
-    <Compile Include="Assets\Scripts\RTS\Properties\Actions\BuildStructure.cs" />
-    <Compile Include="Assets\Scripts\RTS\Properties\Actions\BuildUnit.cs" />
+    <Compile Include="Assets\Scripts\RTS\Properties\Actions\Build.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\DropLoot.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\Harvest.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\Move.cs" />
-    <Compile Include="Assets\Scripts\RTS\Properties\Actions\PickUpItems.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\Repair.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Actions\TakeDamage.cs" />
+    <Compile Include="Assets\Scripts\RTS\Properties\PickUpItems.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\Property.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\ProvideFood.cs" />
     <Compile Include="Assets\Scripts\RTS\Properties\ProvideShelter.cs" />
@@ -256,6 +256,7 @@
     <Compile Include="Assets\Scripts\RTS\ResourceManager.cs" />
     <Compile Include="Assets\Scripts\RTS\ResourcePack.cs" />
     <Compile Include="Assets\Scripts\UI\ConstructionButton.cs" />
+    <Compile Include="Assets\Scripts\UI\HP_Bar.cs" />
     <Compile Include="Assets\Scripts\UI\HUD.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Building\Building.cs" />
     <Compile Include="Assets\Scripts\WorldObject\Resource\HarvestableObject.cs" />

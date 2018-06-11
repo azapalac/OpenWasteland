@@ -165,6 +165,7 @@ Assets/Scripts/ImgPrefab.cs
 Assets/Scripts/Player/Player.cs
 Assets/Scripts/Player/UserInput.cs
 Assets/Scripts/RTS/Blueprint.cs
+Assets/Scripts/RTS/Projectile.cs
 Assets/Scripts/RTS/Properties/Actions/Action.cs
 Assets/Scripts/RTS/Properties/Actions/Attack.cs
 Assets/Scripts/RTS/Properties/Actions/BuildStructure.cs
@@ -172,9 +173,9 @@ Assets/Scripts/RTS/Properties/Actions/BuildUnit.cs
 Assets/Scripts/RTS/Properties/Actions/DropLoot.cs
 Assets/Scripts/RTS/Properties/Actions/Harvest.cs
 Assets/Scripts/RTS/Properties/Actions/Move.cs
-Assets/Scripts/RTS/Properties/Actions/PickUpItems.cs
 Assets/Scripts/RTS/Properties/Actions/Repair.cs
 Assets/Scripts/RTS/Properties/Actions/TakeDamage.cs
+Assets/Scripts/RTS/Properties/PickUpItems.cs
 Assets/Scripts/RTS/Properties/Property.cs
 Assets/Scripts/RTS/Properties/ProvideFood.cs
 Assets/Scripts/RTS/Properties/ProvideShelter.cs
@@ -182,6 +183,7 @@ Assets/Scripts/RTS/Properties/ProvideWater.cs
 Assets/Scripts/RTS/ResourceManager.cs
 Assets/Scripts/RTS/ResourcePack.cs
 Assets/Scripts/UI/ConstructionButton.cs
+Assets/Scripts/UI/HP_Bar.cs
 Assets/Scripts/UI/HUD.cs
 Assets/Scripts/WorldObject/Building/Building.cs
 Assets/Scripts/WorldObject/Resource/HarvestableObject.cs
