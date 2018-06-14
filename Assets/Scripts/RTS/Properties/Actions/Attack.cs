@@ -5,7 +5,7 @@ public class Attack : Action
 {
     public enum Range
     {
-        Melee, Short, Medium, Long
+        Melee, Short, Medium, Long, Test
     }
     public override ActionType Type
     {
@@ -22,12 +22,19 @@ public class Attack : Action
     public int attackDamage;
     public float attackSpeed;
 
+    public GameObject projectilePrefab;
 
+    //For now, projectiles move in a straight line
+    public float projectileSpeed;
+    
 
     private float attackTimer;
 
     [SerializeField]
-    public Range attackRange;
+    public Range AttackRange;
+
+
+    public bool attackWhileMoving;
 
     [SerializeField]
     public AttackEffect attackEffect;
@@ -39,7 +46,7 @@ public class Attack : Action
     {
         get
         {
-            switch (attackRange)
+            switch (AttackRange)
             {
                 case Range.Melee:
                     return 0.5f;
@@ -49,6 +56,9 @@ public class Attack : Action
                     return 30f;
                 case Range.Long:
                     return 50f;
+                case Range.Test:
+                    return Mathf.Infinity;
+
                 default:
                     return -1;
             }
@@ -68,7 +78,7 @@ public class Attack : Action
             attackTimer = 0;
             this.target = target;
             active = true;
-            if(dist < AttackRangeVal)
+            if(dist > AttackRangeVal)
             {
                 //Queue up an attack
                 worldObject.QueueAction(this);
@@ -81,7 +91,13 @@ public class Attack : Action
             }
             else
             {
+              
+                worldObject.StartDoing(this);
 
+                if (!attackWhileMoving)
+                {
+                    worldObject.StopDoing(ActionType.Move);
+                }
             }
         }
         else
@@ -91,10 +107,21 @@ public class Attack : Action
 
       
     }
+
+
+
+ 
     public override void Execute(WorldObject worldObj)
     {
+        if(target == null)
+        {
+            //Stop attacking if the target is destroyed
+            Stop();
+        }
+
         if (active)
         {
+
 
             if (!target.CanDo(ActionType.TakeDamage))
             {
@@ -102,22 +129,43 @@ public class Attack : Action
                 Stop();
             }
             //The higher the attack speed, the faster the worldObject attacks
-            if (target.CanDo(ActionType.TakeDamage) && attackTimer >= 1 / attackSpeed)
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= attackSpeed)
             {
 
-                //TODO: post TakeDamage event to the class
-                //target.TriggerTakeDamage(attackDamage, attackEffect);
-                //TODO: Fire projectile and do attack animation. Projectile should do damage, not the function.
-                ApplyEffect();
-                attackTimer += Time.deltaTime;
+                if(AttackRange == Range.Melee)
+                {
+                    //Play animation
+                    //Set up the take damage effect
+                    TakeDamage takeDamage = target.GetComponent<TakeDamage>();
+                    takeDamage.SetUpTakeDamage(attackDamage, attackEffect);
+                }
+                else
+                {
+                    //play animation
+                    //Launch a projectile that applies the damage effect
+                    GameObject g = GameObject.Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+                    Projectile projectile = g.GetComponent<Projectile>();
+                    projectile.effect = attackEffect;
+                    projectile.damage = attackDamage;
+                    projectile.speed = projectileSpeed;
+                    projectile.range = AttackRangeVal;
+                    projectile.target = target;
+                    projectile.parent = gameObject;
+                }
+                //Reset timer
+                attackTimer = 0;
+                
             }
 
-
         }
+
     }
+    
     //Apply an attack effect to a target
     private void ApplyEffect()
     {
         //Status effects to be added in later. Right now everything is "Normal"
     }
 }
+

@@ -8,6 +8,7 @@ public class UserInput : MonoBehaviour {
 	private Player player;
 	private Camera mainCamera;
     private Vector3 origMousePos;
+    public bool mouseHeldDown;
 	// Use this for initialization
 	void Start () {
 		player = transform.root.GetComponent<Player>();
@@ -91,24 +92,78 @@ public class UserInput : MonoBehaviour {
 	}
 
 	private void MouseActivity(){
-        if (Input.GetMouseButtonDown(0))
-        {
-            origMousePos = Input.mousePosition;
-            player.hud.StartMultiSelect(Input.mousePosition);
-            LeftMouseClick();
-        }
-        else if (Input.GetMouseButtonDown(1))
+       
+
+
+
+        if (Input.GetMouseButtonDown(1) && !Input.GetMouseButtonDown(0))
         {
             RightMouseClick();
         }
-		
-	}
 
-    void OnGUI()
-    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            origMousePos = Input.mousePosition;
+            LeftMouseClick();
+           // StartCoroutine(DetectMouseDown());
+        }
+
+
         if (Input.GetMouseButton(0))
         {
-            player.hud.DrawMultiSelect(origMousePos, Input.mousePosition);
+
+            MultiSelect();
+
+        }
+        else
+        {
+            player.hud.StopMultiSelect();
+            // mouseHeldDown = false;
+        }
+    }
+
+    public IEnumerator DetectMouseDown()
+    {
+        yield return new WaitForSeconds(0.1f);
+        mouseHeldDown = true;
+    }
+
+
+    void ClearSelected()
+    {
+        foreach (WorldObject w in player.SelectedObjects)
+        {
+            w.SetSelection(false);
+        }
+        //player.SelectedObjects.Clear();
+    }
+
+    private void MultiSelect()
+    {
+        MouseRect mouseRect = player.hud.DrawMultiSelect(origMousePos, Input.mousePosition);
+        Rect selectionRect = mouseRect.raycastRect;
+        Rect screenRect = mouseRect.screenRect;
+        //Debug.Log("ScreenRectArea: " + (screenRect.width * screenRect.height));
+        //Use Physics.OverlapSphere to find units that can be multi selected in order to limit range.
+        float mouseDist = Vector3.Distance(origMousePos, Input.mousePosition);
+        if ((screenRect.width * screenRect.height) >= 150f)
+        {
+            for (int i = 0; i < player.selectableUnits.Count; ++i)
+            {
+
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(player.selectableUnits[i].transform.position);
+                if (selectionRect.Contains(screenPos))
+                {
+
+                    player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(true);
+                }
+                else
+                {
+                    player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(false);
+                }
+
+            }
         }
     }
 
@@ -133,17 +188,17 @@ public class UserInput : MonoBehaviour {
                     //NOTE: Add shift click eventually
                     if (worldObject)
                     {
-                        player.SelectedObjects.Clear();
-                        player.SelectedObjects.Add(worldObject);
+                        ClearSelected();
+
                         worldObject.SetSelection(true);
-                        //player.SelectedObjects.Add(worldObject);
+
                     }
 
                 }
             }
             else
             {
-                Debug.Log("Mouse error");
+               // Debug.Log("Mouse error");
             }
 
 		}
@@ -172,7 +227,7 @@ public class UserInput : MonoBehaviour {
             }
             else
             {
-                Debug.Log("Mouse error");
+               // Debug.Log("Mouse error");
             }
         }
     }

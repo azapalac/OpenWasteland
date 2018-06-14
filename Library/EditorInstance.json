@@ -1,8 +1,13 @@
 {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 	"process_id" : 12336,
 =======
 	"process_id" : 540,
 >>>>>>> Stashed changes
 	"version" : "2017.4.0f1"
+=======
+	"process_id" : 15056,
+	"version" : "2017.4.1f1"
+>>>>>>> fb7a6c4592cc3ad935a8423e76615685cb8c4608
 }

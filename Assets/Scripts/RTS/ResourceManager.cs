@@ -110,20 +110,26 @@ using UnityEngine.UI;
     Small,
     Medium, 
     Large
-}
+    }
 
+    [System.Serializable]
     public class Resource
     {
-        public string name { get; set; }
-        public int dropAmount { get; set; }
-        public Rarity rarity { get; set; }
-        public int TechLevel { get; set; }
+     public Resource(string name, Rarity rarity, int techLevel)
+      {
 
-        public override string ToString()
-        {
-            return "  " + dropAmount + " " + name;
-        }
+      }
 
+    [SerializeField]
+    public string name;
+
+    [SerializeField]
+    public Rarity rarity;
+
+    [SerializeField]
+    public int TechLevel;
+
+     
     }
 
     public class Inventory
@@ -147,17 +153,17 @@ using UnityEngine.UI;
 
         //Manages stats for in-game objects
         private static Dictionary<ResourceType, Resource> allResources
-        {
+        {                   
             
             get
             {
                 return new Dictionary<ResourceType, Resource>
                 {
-                    {ResourceType.Iron, new Resource { name = "Iron", rarity = Rarity.Uncommon, TechLevel = 1} },
-                    {ResourceType.Stone, new Resource { name = "Stone", rarity = Rarity.Common, TechLevel = 0} },
-                    {ResourceType.Charcoal, new Resource {name = "Charcoal", rarity = Rarity.Common, TechLevel = 0 } },
-                    {ResourceType.Scrap, new Resource { name = "Scrap", rarity = Rarity.Junk, TechLevel = 0} },
-                    {ResourceType.Steel, new Resource { name = "Steel", rarity = Rarity.Rare, TechLevel = 2} },
+                    {ResourceType.Iron, new Resource ("Iron",  Rarity.Uncommon,  1) },
+                    {ResourceType.Stone, new Resource ("Stone",Rarity.Common,  0) },
+                    {ResourceType.Charcoal, new Resource ("Charcoal",  Rarity.Common, 0) },                                
+                    {ResourceType.Scrap, new Resource ("Scrap",  Rarity.Junk,  0) },
+                    {ResourceType.Steel, new Resource ("Steel",  Rarity.Rare,  2) },
                 };
             }
         }
@@ -214,6 +220,8 @@ using UnityEngine.UI;
 
          
     }
+
+
 
 [System.Serializable]
 public class ResourceDrop

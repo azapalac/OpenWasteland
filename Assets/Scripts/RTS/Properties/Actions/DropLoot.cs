@@ -38,8 +38,14 @@ public class DropLoot : Action
         {
             harvestDamageToTake = harvestDamage;
             active = true;
+            worldObject.StartDoing(this);
 
         }
+    }
+
+    public void SetUpDropLoot()
+    {
+        SetUpDropLoot(ObjectDestroyed);
     }
 
     public override void Execute(WorldObject worldObj)
@@ -53,7 +59,7 @@ public class DropLoot : Action
                 active = false;
                 DropAllResources(worldObj.size);
             }
-            worldObject.UnloadAction(this);
+            worldObject.StopDoing(this);
         }
 
     }

@@ -24,7 +24,7 @@ public class Harvest : Action
             {
                 harvestTimer = 0;
                 targetDropLoot = harvestTarget.GetComponent<DropLoot>();
-                worldObject.LoadAction(this);
+                worldObject.StartDoing(this);
                 active = true;
             }
             else
@@ -41,7 +41,7 @@ public class Harvest : Action
       if(targetDropLoot == null)
         {
             active = false;
-            worldObject.UnloadAction(this);
+            worldObject.StopDoing(this);
             return;
         }
 

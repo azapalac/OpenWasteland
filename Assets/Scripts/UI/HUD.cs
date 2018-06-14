@@ -9,7 +9,7 @@ public class HUD : MonoBehaviour {
     private const float renderWidth = 20.0f;
     //Change color based on allegiance to player
 	public GameObject selectionBox;
-    private Rect selectionRect;
+    private MouseRect selectionRect;
     public GameObject radius;
 	private SpriteRenderer selectionBoxRenderer;
 	private Vector3 size;
@@ -20,6 +20,7 @@ public class HUD : MonoBehaviour {
 	public Image mouseCursor;
 	public Sprite defaultCursor, moveCursor, attackCursor, selectCursor, harvestCursor;
     public GameObject imagePrefab;
+    
 
 
 	// Use this for initialization
@@ -33,7 +34,7 @@ public class HUD : MonoBehaviour {
 
 		ResourceManager.StoreSelectionBoxItems(selectionBox);
         ResourceManager.StoreRadiusItems(radius);
-
+        selectionRect = new MouseRect();
     }
 	
 	// Update is called once per frame
@@ -53,6 +54,8 @@ public class HUD : MonoBehaviour {
         
 		HandleGUI();
 	}
+
+  //  void 
 
 	void HandleGUI(){
         //Work on this later!!!
@@ -95,14 +98,10 @@ public class HUD : MonoBehaviour {
                        if (player.SelectedObjects[i].CanDo(ActionType.Harvest))
                         {
 
-                        }
-
-                        
+                        }         
                      }
                     
                 }
-
-
 
             } else {
                 mouseCursor.sprite = defaultCursor;
@@ -118,15 +117,8 @@ public class HUD : MonoBehaviour {
        
 	}
 
-    public void StartMultiSelect(Vector3 origin)
-    {
-    }
 
-    public void EndMultiSelect()
-    {
-    }
-
-    public void DrawMultiSelect(Vector3 origMousePos, Vector3 currMousePos)
+    public MouseRect DrawMultiSelect(Vector3 origMousePos, Vector3 currMousePos)
     {
 
         Vector3 diff = currMousePos - origMousePos;
@@ -136,44 +128,46 @@ public class HUD : MonoBehaviour {
 
         Vector3 posBA = new Vector3(origMousePos.x + diff.x, origMousePos.y, 0);
         Vector3 posAB = new Vector3(origMousePos.x, origMousePos.y + diff.y, 0);
-        
 
-        if(diff.x > 0 && diff.y > 0)
+
+        if (diff.x > 0 && diff.y > 0)
         {
             //First Quadrant
             rectOrigin = origMousePos;
-            
-        }else if(diff.x < 0 && diff.y > 0)
+
+        }
+        else if (diff.x < 0 && diff.y > 0)
         {
             //Second Quadrant
             rectOrigin = posBA;
-        }else if(diff.x > 0 && diff.y < 0)
+        }
+        else if (diff.x > 0 && diff.y < 0)
         {
             //Third Quadrant
             rectOrigin = posAB;
-        }else if(diff.x < 0 && diff.y < 0)
+        }
+        else if (diff.x < 0 && diff.y < 0)
         {
             //Fourth Quadrant
             rectOrigin = currMousePos;
         }
-        
-        Rect rect = new Rect(rectOrigin.x, rectOrigin.y, Mathf.Abs(diff.x), Mathf.Abs(diff.y));
-        ResourceManager.DrawScreenRect(ResourceManager.GetScreenRect(origMousePos, currMousePos), ResourceManager.selectionColor);
-       
-        for (int i  = 0; i < player.selectableUnits.Count; ++i)
-        {
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(player.selectableUnits[i].transform.position);
+        Rect screenRect = ResourceManager.GetScreenRect(origMousePos, currMousePos);
+        Rect raycastRect = new Rect(rectOrigin.x, rectOrigin.y, Mathf.Abs(diff.x), Mathf.Abs(diff.y));
+        selectionRect = new MouseRect(screenRect, raycastRect, origMousePos, currMousePos);
+     
+        return selectionRect;
 
-            if (rect.Contains(screenPos))
-            {
-                    //Debug.Log(multiSelectImage.rectTransform.rect.width);
-                   // player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(true);
-            }else
-            {
-                //Deselect - fix this logic
-                //player.selectableUnits[i].GetComponent<WorldObject>().SetSelection(false);
-            }
-        }
+
+    }
+
+    public void StopMultiSelect()
+    {
+        selectionRect = new MouseRect();
+    }
+
+    private void OnGUI()
+    {
+        ResourceManager.DrawScreenRect(selectionRect.screenRect, ResourceManager.selectionColor);
 
     }
 
@@ -186,4 +180,25 @@ public class HUD : MonoBehaviour {
 
 		return insideWidth;
 	}
+}
+public class MouseRect
+{
+    public Rect screenRect;
+    public Rect raycastRect;
+    public Vector3 origPos;
+    public Vector3 currPos;
+    public MouseRect(Rect rect1, Rect rect2,  Vector3 origPos, Vector3 currPos)
+    {
+        this.origPos = origPos;
+        this.currPos = currPos;
+        screenRect = rect1;
+        raycastRect = rect2;
+
+    }
+
+    public MouseRect()
+    {
+
+    }
+
 }

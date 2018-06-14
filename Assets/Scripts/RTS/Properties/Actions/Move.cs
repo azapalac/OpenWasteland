@@ -32,7 +32,7 @@ public class Move : Action
             if (Vector3.Magnitude(transform.position - dest) < 2*moveSpeed*Time.deltaTime)
             {
                 active = false;
-                worldObject.UnloadAction(this);
+                worldObject.StopDoing(this);
             }
 
         }
@@ -44,13 +44,20 @@ public class Move : Action
         //Make sure to unload this from the queue so I don't stack up multiples of the same command
         if (worldObject.IsDoing(this))
         {
-            worldObject.UnloadAction(this);
+            worldObject.StopDoing(this);
+            if (worldObject.CanDo(ActionType.Attack))
+            {
+                if (!worldObject.GetComponent<Attack>().attackWhileMoving)
+                {
+                    worldObject.StopDoing(ActionType.Attack);
+                }
+            }
         }
 
         source = transform.position;
         dest = destination;
         active = true;
-        worldObject.LoadAction(this);
+        worldObject.StartDoing(this);
 
     }
 

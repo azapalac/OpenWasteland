@@ -10,13 +10,13 @@ public class ConstructionButton : MonoBehaviour {
 	// Use this for initialization
 
     public void SetUp(Blueprint b, WorldObject obj)
-    {
+    {/*
         loadedBlueprint = b;
         parentObject = obj;
         button = gameObject.GetComponent<Button>();
         gameObject.GetComponentInChildren<Text>().text = "Build " + loadedBlueprint.Name;
         gameObject.GetComponent<RectTransform>().position = new Vector3(Screen.width / 2, Screen.height / 2);
-        transform.parent = GameObject.Find("HUD").transform;
+        transform.parent = GameObject.Find("HUD").transform;*/
     }
 	
 	// Update is called once per frame

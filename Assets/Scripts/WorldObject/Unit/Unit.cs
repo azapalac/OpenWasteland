@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Unit : WorldObject {
     public int populationCost;
-    public string unitType { get; set; }
+    public string UnitType { get; set; }
 	
 	// Use this for initialization
 	protected override void Start () {

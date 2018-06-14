@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
 	public bool objectIsSelected = false;
 	public WorldObject SelectedObject { get; set;}
     public Dictionary<string, Blueprint> knownBlueprints;
+    public List<Resource> storedResources;
     public int knowledgeLimit;
     public List<GameObject> selectableUnits;
 
@@ -49,7 +50,8 @@ public class Player : MonoBehaviour {
     }
 	void Start () {
         knownPlayers = new Dictionary<string, Status>();
-        
+        storedResources = new List<Resource>();
+        knownBlueprints = new Dictionary<string, Blueprint>();
 		hud = GetComponentInChildren<HUD>();
 	}
 	

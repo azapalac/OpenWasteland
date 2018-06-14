@@ -11,10 +11,8 @@ using UnityEngine;
         TakeDamage,
         Harvest,
         DropLoot,
-        PickUpItems,
-        BuildUnit,
-        BuildStructure,
-        Repair,
+        Build,
+        Repair
 
     }
     public enum Armor
@@ -34,7 +32,7 @@ public class Action : Property
 
    public virtual void SetUpRightClick(Vector3 hitPoint, GameObject clickedObject)
    {
-
+        //Some actions have default right click triggers, others don't
    }
    
 
