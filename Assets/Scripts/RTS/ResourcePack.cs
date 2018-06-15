@@ -5,7 +5,7 @@ using System.Collections;
 public class ResourcePack : MonoBehaviour {
     public Resource containedResource;
     public string containedResourceName;
-    public int containedResourceAmount;
+    public int dropAmount;
     public float pickupRadius = 5f;
     public bool dropped;
 	// Use this for initialization

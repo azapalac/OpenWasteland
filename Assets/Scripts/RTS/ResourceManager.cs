@@ -117,7 +117,9 @@ using UnityEngine.UI;
     {
      public Resource(string name, Rarity rarity, int techLevel)
       {
-
+        this.name = name;
+        this.rarity = rarity;
+        this.techLevel = techLevel;
       }
 
     [SerializeField]
@@ -127,7 +129,7 @@ using UnityEngine.UI;
     public Rarity rarity;
 
     [SerializeField]
-    public int TechLevel;
+    public int techLevel;
 
      
     }
@@ -250,28 +252,28 @@ public class ResourceDrop
             {
                 //Put this in a database eventually
                 case WorldObject.Size.Tiny:
-                    pack.containedResource.dropAmount = Random.Range(1, 5);
+                    pack.dropAmount = Random.Range(1, 5);
                     break;
 
                 case WorldObject.Size.Small:
-                    pack.containedResource.dropAmount = Random.Range(1, 10);
+                    pack.dropAmount = Random.Range(1, 10);
                     break;
 
                 case WorldObject.Size.Medium:
-                    pack.containedResource.dropAmount = Random.Range(3, 13);
+                    pack.dropAmount = Random.Range(3, 13);
                     break;
 
                 case WorldObject.Size.Large:
-                    pack.containedResource.dropAmount = Random.Range(5, 15);
+                    pack.dropAmount = Random.Range(5, 15);
                     break;
 
 
                 case WorldObject.Size.Massive:
-                    pack.containedResource.dropAmount = Random.Range(8, 25); 
+                    pack.dropAmount = Random.Range(8, 25); 
                     break;
 
                 case WorldObject.Size.Gigantic:
-                    pack.containedResource.dropAmount = Random.Range(15, 35);
+                    pack.dropAmount = Random.Range(15, 35);
                     break;
             }
             
@@ -279,11 +281,11 @@ public class ResourceDrop
             switch (dropDensity)
             {
                 case DropDensity.Single:
-                    pack.containedResource.dropAmount = 1;
+                    pack.dropAmount = 1;
                     break;
 
                 case DropDensity.Small:
-                    pack.containedResource.dropAmount = Mathf.CeilToInt(pack.containedResource.dropAmount * 0.5f);
+                    pack.dropAmount = Mathf.CeilToInt(pack.dropAmount * 0.5f);
                     break;
 
                 case DropDensity.Medium:
@@ -291,10 +293,10 @@ public class ResourceDrop
                     break;
 
                 case DropDensity.Large:
-                    pack.containedResource.dropAmount *= 2;
+                    pack.dropAmount *= 2;
                     break;
             }
-            pack.containedResourceAmount = pack.containedResource.dropAmount;
+            //pack.containedResourceAmount = pack.containedResource.dropAmount;
 
         }
         else
