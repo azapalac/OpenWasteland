@@ -113,20 +113,18 @@ using UnityEngine.UI;
     }
 
     [System.Serializable]
-    public class Resource
+    public class ResourceInfo
     {
-     public Resource(string name, Rarity rarity, int techLevel)
+     public ResourceInfo(string name, int techLevel)
       {
         this.name = name;
-        this.rarity = rarity;
         this.techLevel = techLevel;
       }
 
     [SerializeField]
     public string name;
 
-    [SerializeField]
-    public Rarity rarity;
+    //Keep stack size and inventory infinite for now until I figure out how splitting works
 
     [SerializeField]
     public int techLevel;
@@ -136,7 +134,7 @@ using UnityEngine.UI;
 
     public class Inventory
     {
-        private List<Resource> resources;
+        private List<ResourceInfo> resources;
         private int _capacity;
         public int Capacity { get { return _capacity; } }
 
@@ -144,7 +142,7 @@ using UnityEngine.UI;
         {
             _capacity = capacity;
         }
-        public void AddResource(Resource resource)
+        public void AddResource(ResourceInfo resource)
         {
             //Calculate capacity, then if there is room for the resource, add it in
         }
@@ -154,18 +152,18 @@ using UnityEngine.UI;
     {
 
         //Manages stats for in-game objects
-        private static Dictionary<ResourceType, Resource> allResources
+        private static Dictionary<ResourceType, ResourceInfo> allResources
         {                   
             
             get
             {
-                return new Dictionary<ResourceType, Resource>
+                return new Dictionary<ResourceType, ResourceInfo>
                 {
-                    {ResourceType.Iron, new Resource ("Iron",  Rarity.Uncommon,  1) },
-                    {ResourceType.Stone, new Resource ("Stone",Rarity.Common,  0) },
-                    {ResourceType.Charcoal, new Resource ("Charcoal",  Rarity.Common, 0) },                                
-                    {ResourceType.Scrap, new Resource ("Scrap",  Rarity.Junk,  0) },
-                    {ResourceType.Steel, new Resource ("Steel",  Rarity.Rare,  2) },
+                    {ResourceType.Iron, new ResourceInfo ("Iron",  1) },
+                    {ResourceType.Stone, new ResourceInfo ("Stone",  0) },
+                    {ResourceType.Charcoal, new ResourceInfo ("Charcoal",  0) },                                
+                    {ResourceType.Scrap, new ResourceInfo ("Scrap",  0) },
+                    {ResourceType.Steel, new ResourceInfo ("Steel",  2) },
                 };
             }
         }
@@ -209,7 +207,7 @@ using UnityEngine.UI;
         return b;
     }
 
-        public static Resource GetResourceDrop(ResourceType type)
+        public static ResourceInfo GetResourceDrop(ResourceType type)
         {
         return allResources[type];
         }
@@ -237,12 +235,12 @@ public class ResourceDrop
     public ResourcePack GetResourcePack(WorldObject.Size objectSize)
     {
         
-        Resource resource = ObjectManager.GetResourceDrop(type);
+        ResourceInfo resourceInfo = ObjectManager.GetResourceDrop(type);
         //Load and instantiate pack
-        string name = resource.name + "Pack";
+        string name = resourceInfo.name + "Pack";
         GameObject g = Resources.Load("ResourcePacks/" + name) as GameObject;
         ResourcePack  pack = g.GetComponent<ResourcePack>();
-        pack.containedResource = resource;
+        pack.GetInfo(resourceInfo);
 
         if (ObjectManager.GetDropChance(rarity))
         {
@@ -252,28 +250,28 @@ public class ResourceDrop
             {
                 //Put this in a database eventually
                 case WorldObject.Size.Tiny:
-                    pack.dropAmount = Random.Range(1, 5);
+                    pack.amount = Random.Range(1, 5);
                     break;
 
                 case WorldObject.Size.Small:
-                    pack.dropAmount = Random.Range(1, 10);
+                    pack.amount = Random.Range(1, 10);
                     break;
 
                 case WorldObject.Size.Medium:
-                    pack.dropAmount = Random.Range(3, 13);
+                    pack.amount = Random.Range(3, 13);
                     break;
 
                 case WorldObject.Size.Large:
-                    pack.dropAmount = Random.Range(5, 15);
+                    pack.amount = Random.Range(5, 15);
                     break;
 
 
                 case WorldObject.Size.Massive:
-                    pack.dropAmount = Random.Range(8, 25); 
+                    pack.amount = Random.Range(8, 25); 
                     break;
 
                 case WorldObject.Size.Gigantic:
-                    pack.dropAmount = Random.Range(15, 35);
+                    pack.amount = Random.Range(15, 35);
                     break;
             }
             
@@ -281,11 +279,11 @@ public class ResourceDrop
             switch (dropDensity)
             {
                 case DropDensity.Single:
-                    pack.dropAmount = 1;
+                    pack.amount = 1;
                     break;
 
                 case DropDensity.Small:
-                    pack.dropAmount = Mathf.CeilToInt(pack.dropAmount * 0.5f);
+                    pack.amount = Mathf.CeilToInt(pack.amount * 0.5f);
                     break;
 
                 case DropDensity.Medium:
@@ -293,7 +291,7 @@ public class ResourceDrop
                     break;
 
                 case DropDensity.Large:
-                    pack.dropAmount *= 2;
+                    pack.amount *= 2;
                     break;
             }
             //pack.containedResourceAmount = pack.containedResource.dropAmount;

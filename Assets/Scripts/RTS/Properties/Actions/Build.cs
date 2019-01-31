@@ -5,7 +5,7 @@ using UnityEngine;
 public class Build : Action {
 
     private List<Blueprint> knownBlueprints;
-
+    public Blueprint currentBlueprint;
     public float totalBuildTime;
     private float buildTimer;
 
@@ -30,7 +30,7 @@ public class Build : Action {
 
     public void SetUp(Blueprint blueprintToBuild)
     {
-
+        worldObject.StartDoing(this);
     }
 
     public override void Execute(WorldObject worldObj)

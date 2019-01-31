@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Building : WorldObject {
 
-    public List<Resource> resourcesProduced;
+    public List<ResourceInfo> resourcesProduced;
   
 	
 	protected override void Start () {
